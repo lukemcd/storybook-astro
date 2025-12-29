@@ -1,16 +1,11 @@
-import { dirname, join } from 'node:path';
-import type { StorybookConfigVite, FrameworkOptions } from './types';
-import { vitePluginStorybookAstroMiddleware } from './viteStorybookAstroMiddlewarePlugin';
-import { viteStorybookRendererFallbackPlugin } from './viteStorybookRendererFallbackPlugin';
-import { mergeWithAstroConfig } from './vitePluginAstro';
-
-const getAbsolutePath = <I extends string>(input: I): I =>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dirname(require.resolve(join(input, 'package.json'))) as any;
+import type { StorybookConfigVite, FrameworkOptions } from './types.ts';
+import { vitePluginStorybookAstroMiddleware } from './viteStorybookAstroMiddlewarePlugin.ts';
+import { viteStorybookRendererFallbackPlugin } from './viteStorybookRendererFallbackPlugin.ts';
+import { mergeWithAstroConfig } from './vitePluginAstro.ts';
 
 export const core = {
-  builder: getAbsolutePath('@storybook/builder-vite'),
-  renderer: getAbsolutePath('@storybook/astro-renderer')
+  builder: '@storybook/builder-vite',
+  renderer: '@storybook/astro-renderer'
 };
 
 export const viteFinal: StorybookConfigVite['viteFinal'] = async (config, { presets }) => {
@@ -27,6 +22,23 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (config, { pres
     viteStorybookRendererFallbackPlugin(options.integrations),
     ...viteConfig.plugins
   );
+
+  // Add React/ReactDOM aliases for storybook-solidjs compatibility
+  if (!config.resolve) {
+    config.resolve = {};
+  }
+  if (!config.resolve.alias) {
+    config.resolve.alias = {};
+  }
+  
+  // Ensure React is available for storybook-solidjs
+  const aliases = config.resolve.alias as Record<string, string>;
+  if (!aliases['react']) {
+    aliases['react'] = 'react';
+  }
+  if (!aliases['react-dom']) {
+    aliases['react-dom'] = 'react-dom';
+  }
 
   const finalConfig = await mergeWithAstroConfig(config, options.integrations);
 
