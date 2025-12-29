@@ -1,6 +1,19 @@
-import { useState } from 'react';
+import { h } from 'preact';
+import { useState } from 'preact/hooks';
 
-function Accordion({ items = [], allowMultiple = false }) {
+interface AccordionItem {
+  title: string;
+  content: string;
+}
+
+interface AccordionProps {
+  items?: AccordionItem[];
+  allowMultiple?: boolean;
+}
+
+export default function Accordion({ items = [], allowMultiple = false }: AccordionProps) {
+  // Clone items to avoid issues with frozen arrays from Storybook
+  const clonedItems = items.map(item => ({ ...item }));
   const [openIndexes, setOpenIndexes] = useState([]);
 
   const toggleItem = (index) => {
@@ -18,21 +31,21 @@ function Accordion({ items = [], allowMultiple = false }) {
   };
 
   return (
-    <div data-testid="react-accordion" className="accordion">
-      {items.map((item, index) => (
-        <div key={index} className="accordion-item">
+    <div data-testid="preact-accordion" class="accordion">
+      {clonedItems.map((item, index) => (
+        <div key={index} class="accordion-item">
           <button
-            className="accordion-header"
+            class="accordion-header"
             onClick={() => toggleItem(index)}
             aria-expanded={openIndexes.includes(index)}
           >
             {item.title}
-            <span className="accordion-icon">
+            <span class="accordion-icon">
               {openIndexes.includes(index) ? '−' : '+'}
             </span>
           </button>
           {openIndexes.includes(index) && (
-            <div className="accordion-content">
+            <div class="accordion-content">
               {item.content}
             </div>
           )}
@@ -79,5 +92,3 @@ function Accordion({ items = [], allowMultiple = false }) {
     </div>
   );
 }
-
-export default Accordion;
