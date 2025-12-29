@@ -80,5 +80,8 @@
   "workspaces": [
     "packages/@storybook/*"
   ],
-  "packageManager": "yarn@4.6.0"
+  "packageManager": "yarn@4.6.0",
+  "resolutions": {
+    "vitefu": "^1.1.0"
+  }
 }
