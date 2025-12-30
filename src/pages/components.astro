@@ -9,28 +9,28 @@ import CounterPreact from '../components/preact/Counter/Counter.jsx';
 import CounterSvelte from '../components/svelte/Counter/Counter.svelte';
 import Accordion from '../components/astro/Accordion/Accordion.astro';
 import AccordionAlpine from '../components/alpine/Accordion/Accordion.astro';
-import AccordionReact from '../components/react/Accordion/Accordion.jsx';
+import AccordionReact from '../components/react/Accordion/Accordion.tsx';
 import AccordionVue from '../components/vue/Accordion/Accordion.vue';
 import AccordionSolid from '../components/solid/Accordion/Accordion.tsx';
-import AccordionPreact from '../components/preact/Accordion/Accordion.jsx';
+import AccordionPreact from '../components/preact/Accordion/Accordion.tsx';
 import AccordionSvelte from '../components/svelte/Accordion/Accordion.svelte';
 
-const accordionItems = [
+const accordionItems: Array<{ title: string; content: string }> = [
   { title: 'What is Astro?', content: 'Astro is a modern web framework for building fast, content-focused websites.' },
   { title: 'Why use Storybook?', content: 'Storybook helps you build UI components in isolation and document them.' },
   { title: 'Framework Support', content: 'This project supports React, Vue, Svelte, Solid, Preact, and Alpine.js!' },
 ];
 ---
 
-<Layout title="Widgets Demo - Storybook Astro">
-  <h1>Our Widgets</h1>
+<Layout title="Components Demo - Storybook Astro">
+  <h1>Our Components</h1>
   <p>
-    Explore our collection of interactive widgets built with different JavaScript frameworks.
+    Explore our collection of interactive components built with different JavaScript frameworks.
     Each demonstrates how the same functionality can be implemented across various technologies.
   </p>
 
   <section class="widget-section">
-    <h2>Counter Widgets</h2>
+    <h2>Counter Components</h2>
     <p>Simple counters showing basic state management across frameworks.</p>
 
     <div class="widgets-grid">
@@ -72,7 +72,7 @@ const accordionItems = [
   </section>
 
   <section class="widget-section">
-    <h2>Accordion Widgets</h2>
+    <h2>Accordion Components</h2>
     <p>Interactive accordions demonstrating more complex state management and UI interactions.</p>
     
     <div class="widgets-grid">

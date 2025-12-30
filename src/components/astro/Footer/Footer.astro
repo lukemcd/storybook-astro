@@ -1,9 +1,18 @@
----
-const currentYear = new Date().getFullYear();
----
-
 <footer>
-  <p>&copy; {currentYear} Astro Widgets. All rights reserved.</p>
+  <div class="footer-content">
+    <div class="links">
+      <a href="https://github.com/storybookjs/storybook/issues/18356" target="_blank" rel="noopener noreferrer">
+        Feature Request: storybookjs/storybook#18356
+      </a>
+      <a href="https://storybook.js.org/docs/configure/integration/frameworks" target="_blank" rel="noopener noreferrer">
+        Storybook Framework Documentation
+      </a>
+      <a href="https://docs.astro.build/en/reference/container-reference/" target="_blank" rel="noopener noreferrer">
+        Astro Container API
+      </a>
+    </div>
+    <p class="license">Licensed under MIT</p>
+  </div>
 </footer>
 
 <style>
@@ -14,12 +23,38 @@ const currentYear = new Date().getFullYear();
     margin-top: auto;
   }
 
-  footer p {
+  .footer-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .links a {
     color: #e0e0e0;
-    text-align: center;
+    text-decoration: none;
     font-size: 0.9rem;
+    transition: color 0.2s;
+  }
+
+  .links a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+  }
+
+  .license {
+    color: #a0a0a0;
+    font-size: 0.85rem;
+    margin: 0;
   }
 </style>

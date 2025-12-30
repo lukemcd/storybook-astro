@@ -1,4 +1,4 @@
-import Accordion from './Accordion.jsx';
+import Accordion from './Accordion.tsx';
 import { h } from 'preact';
 
 // Wrapper to clone frozen args from Storybook

@@ -8,7 +8,7 @@ const currentPath = Astro.url.pathname;
     <nav>
       <a href="/" class:list={[{ active: currentPath === '/' }]}>Home</a>
       <a href="/about" class:list={[{ active: currentPath === '/about' || currentPath === '/about/' }]}>About</a>
-      <a href="/widgets" class:list={[{ active: currentPath === '/widgets' || currentPath === '/widgets/' }]}>Widgets Demo</a>
+      <a href="/components" class:list={[{ active: currentPath === '/components' || currentPath === '/components/' }]}>Components Demo</a>
     </nav>
   </div>
 </header>
