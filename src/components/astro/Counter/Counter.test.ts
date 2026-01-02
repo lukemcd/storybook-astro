@@ -8,6 +8,7 @@ import Counter from './Counter.astro';
 
 async function renderAstroComponent(Component: AstroComponentFactory, renderingOptions = {}) {
   const container = await AstroContainer.create();
+
   document.body.innerHTML = await container.renderToString(Component, renderingOptions);
 }
 
@@ -19,5 +20,6 @@ test('Astro Counter renders correctly', async () => {
   );
 
   const button = screen.getByRole('button', { name: '+1' });
+
   expect(button).toBeInTheDocument();
 });

@@ -11,6 +11,7 @@ interface Props {
 
 const { items = [], allowMultiple = false } = Astro.props;
 const componentId = `accordion-${Math.random().toString(36).substr(2, 9)}`;
+
 ---
 
 <div class="astro-accordion" data-testid="vanilla-accordion" data-component-id={componentId} data-allow-multiple={allowMultiple}>

@@ -5,9 +5,7 @@ import type {
   NamedOrDefaultProjectAnnotations,
   NormalizedProjectAnnotations,
   ProjectAnnotations,
-  Renderer,
   StoryAnnotationsOrFn,
-  StoryContext,
   WebRenderer,
 } from 'storybook/internal/types';
 // @ts-ignore - Storybook internal modules have complex module resolution

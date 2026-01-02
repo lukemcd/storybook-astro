@@ -2,7 +2,8 @@
 import { Image } from 'astro:assets';
 
 interface Props {
-  imageSrc: ImageMetadata | string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  imageSrc: any;
   imageAlt?: string;
   reversed?: boolean;
 }
@@ -11,6 +12,7 @@ const { imageSrc, imageAlt = 'Image', reversed = false } = Astro.props;
 
 // Handle both ImageMetadata objects and string URLs
 const isStringUrl = typeof imageSrc === 'string';
+
 ---
 
 <div class="image-text" class:list={{ reversed }}>

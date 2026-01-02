@@ -7,6 +7,7 @@ function AccordionWrapper(props) {
     ...props,
     items: props.items ? props.items.map(item => ({ ...item })) : []
   };
+
   return h(Accordion, clonedProps);
 }
 

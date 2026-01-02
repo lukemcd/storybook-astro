@@ -39,7 +39,7 @@ export function testStoryRenders(storyName: string, story: any) {
         expect(result.args).toBeDefined();
       }
       
-      console.log(`✓ ${storyName} rendered successfully`);
+      console.warn(`✓ ${storyName} rendered successfully`);
       
     } catch (error: any) {
       const errorMessage = error.message;
@@ -48,8 +48,9 @@ export function testStoryRenders(storyName: string, story: any) {
       if (errorMessage.includes('renderToCanvas is not a function')) {
         // This indicates the component is properly configured but Storybook runtime isn't available
         // This is acceptable for Astro components that work in Storybook
-        console.log(`✓ ${storyName} is properly configured (Storybook runtime not available)`);
-        return;
+        console.warn(`✓ ${storyName} is properly configured (Storybook runtime not available)`);
+        
+return;
       }
       
       // Check for renderer not found errors (indicates broken integration)

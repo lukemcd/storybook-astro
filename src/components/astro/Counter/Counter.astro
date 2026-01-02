@@ -7,7 +7,8 @@
   (function() {
     function initCounter() {
       const counter = document.querySelector('.astro-counter');
-      if (!counter) return;
+
+      if (!counter) {return;}
       
       const countSpan = counter.querySelector('.count');
       const button = counter.querySelector('.increment');

@@ -33,6 +33,7 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (config, { pres
   
   // Ensure React is available for storybook-solidjs
   const aliases = config.resolve.alias as Record<string, string>;
+
   if (!aliases['react']) {
     aliases['react'] = 'react';
   }

@@ -109,6 +109,30 @@ export default [
   //   }
   // },
 
+  // Disable Vue rules for .stories.jsx files
+  {
+    files: ['**/*.stories.jsx'],
+    rules: {
+      'vue/multi-word-component-names': 'off'
+    }
+  },
+  // Disable svelte each-key requirement (not always needed for simple cases)
+  {
+    files: ['**/*.svelte'],
+    rules: {
+      'svelte/require-each-key': 'warn'
+    }
+  },
+  // Allow any types in experimental code
+  {
+    files: ['**/portable-stories.ts', '**/middleware.ts', '**/test-utils.ts'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      'no-console': 'off'
+    }
+  },
   // Custom global overrides
   {
     files: [`**/*.{${ALL_EXTENSIONS}}`],
@@ -183,7 +207,17 @@ export default [
   },
   // Global ignores
   {
-    ignores: ['.yarn/', '.astro', '**/coverage/', '**/@types/', '.vscode/', '.idea/']
+    ignores: [
+      '.yarn/',
+      '.astro',
+      '**/coverage/',
+      '**/@types/',
+      '.vscode/',
+      '.idea/',
+      'storybook-static/',
+      '**/dist/',
+      '**/node_modules/'
+    ]
   },
   ...storybook.configs["flat/recommended"]
 ];

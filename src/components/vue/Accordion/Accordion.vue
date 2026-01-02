@@ -1,5 +1,8 @@
 <template>
-  <div data-testid="vue-accordion" class="accordion">
+  <div
+    data-testid="vue-accordion"
+    class="accordion"
+  >
     <div
       v-for="(item, index) in items"
       :key="index"
@@ -7,15 +10,18 @@
     >
       <button
         class="accordion-header"
-        @click="toggleItem(index)"
         :aria-expanded="isOpen(index)"
+        @click="toggleItem(index)"
       >
         {{ item.title }}
         <span class="accordion-icon">
           {{ isOpen(index) ? '-' : '+' }}
         </span>
       </button>
-      <div v-if="isOpen(index)" class="accordion-content">
+      <div
+        v-if="isOpen(index)"
+        class="accordion-content"
+      >
         {{ item.content }}
       </div>
     </div>
@@ -43,6 +49,7 @@ export default {
     const toggleItem = (index) => {
       if (props.allowMultiple) {
         const idx = openIndexes.value.indexOf(index);
+
         if (idx > -1) {
           openIndexes.value.splice(idx, 1);
         } else {

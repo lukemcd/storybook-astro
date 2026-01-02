@@ -9,11 +9,6 @@ import svelte from '@astrojs/svelte';
 import alpinejs from '@astrojs/alpinejs';
 import type { UserConfig } from 'vite';
 import { solidVitestPatch } from './lib/test-utils';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
-
-const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 const vitestConfig = defineConfig({
   mode: 'test',

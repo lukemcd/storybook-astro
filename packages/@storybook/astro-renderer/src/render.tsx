@@ -109,6 +109,7 @@ function replaceTemplatePlaceholders(template: string, args: Record<string, unkn
   Object.entries(args).forEach(([key, value]) => {
     const placeholder = `{{${key}}}`;
     const replacement = String(value);
+
     output = output.replace(new RegExp(placeholder, 'g'), replacement);
   });
   
@@ -128,6 +129,7 @@ function cloneElementWithArgs(element: HTMLElement, args: Record<string, unknown
   
   Object.entries(args).forEach(([key, value]) => {
     const attributeValue = typeof value === 'string' ? value : JSON.stringify(value);
+
     output.setAttribute(key, attributeValue);
   });
   
@@ -154,12 +156,14 @@ export async function renderToCanvas(
   // Handle Astro components with server-side rendering
   if (isAstroComponent(element)) {
     await renderAstroToCanvas(element, storyContext.args, canvasElement);
+
     return;
   }
 
   // Handle string content
   if (typeof element === 'string') {
     renderStringToCanvas(element, canvasElement);
+
     return;
   }
 
@@ -171,12 +175,14 @@ export async function renderToCanvas(
     if (renderer === 'svelte') {
       applyAstroStyles();
     }
+
     return;
   }
 
   // Handle DOM nodes
   if (element instanceof window.Node) {
     renderNodeToCanvas(element, canvasElement, forceRemount);
+
     return;
   }
 
@@ -266,6 +272,7 @@ function applyAstroStyles(): void {
     .filter((el) => /__vite__updateStyle/.test(el.innerHTML))
     .forEach((styleElement) => {
       const script = document.createElement('script');
+
       script.type = 'module';
       
       const safeScriptContent = styleElement.innerHTML

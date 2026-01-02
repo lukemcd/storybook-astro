@@ -14,6 +14,7 @@
   function toggleItem(index: number) {
     if (allowMultiple) {
       const idx = openIndexes.indexOf(index);
+
       if (idx > -1) {
         openIndexes = openIndexes.filter(i => i !== index);
       } else {
