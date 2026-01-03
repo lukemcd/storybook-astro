@@ -25,5 +25,11 @@ pnpm-debug.log*
 
 *storybook.log
 
-.yarn/
+# Yarn - exclude cache but include releases and plugins
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 storybook-static/
