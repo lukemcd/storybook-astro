@@ -42,7 +42,8 @@ export const render: ArgsStoryFn<$FIXME> = (args, context) => {
   const typedRenderers = renderers as RendererRegistry;
 
   // Delegate to framework-specific renderers (React, Vue, Solid, etc.)
-  if (renderer && Object.hasOwn(typedRenderers, renderer)) {
+  // Skip 'astro' since that's the base renderer handled below
+  if (renderer && renderer !== 'astro' && Object.hasOwn(typedRenderers, renderer)) {
     return typedRenderers[renderer].render(args, context);
   }
 
@@ -73,7 +74,7 @@ export const render: ArgsStoryFn<$FIXME> = (args, context) => {
     }
 
     // If we have a renderer parameter but didn't delegate above, the renderer may not be loaded correctly
-    if (renderer) {
+    if (renderer && renderer !== 'astro') {
       throw new Error(
         `Renderer '${renderer}' not found. Available renderers: ${Object.keys(typedRenderers).join(', ')}`
       );
@@ -168,7 +169,7 @@ export async function renderToCanvas(
   }
 
   // Delegate to framework-specific renderers
-  if (renderer && Object.hasOwn(typedRenderers, renderer)) {
+  if (renderer && renderer !== 'astro' && Object.hasOwn(typedRenderers, renderer)) {
     await typedRenderers[renderer].renderToCanvas(ctx, canvasElement);
     // Apply Vite styles for frameworks that need it (Svelte)
     // Vue handles its own styles and this interferes with its CSS processing
