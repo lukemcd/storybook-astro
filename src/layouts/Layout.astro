@@ -1,0 +1,30 @@
+---
+import Header from '../components/astro/Header/Header.astro';
+import Footer from '../components/astro/Footer/Footer.astro';
+
+interface Props {
+  title?: string;
+}
+
+const { title = 'Storybook Astro' } = Astro.props;
+
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="stylesheet" href="/src/styles/global.css" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<slot />
+		</main>
+		<Footer />
+	</body>
+</html>
