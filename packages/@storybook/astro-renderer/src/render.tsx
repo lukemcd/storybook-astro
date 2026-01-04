@@ -312,6 +312,22 @@ function activateScriptTags(container: $FIXME): void {
 
 
 /**
+ * Generates a random UUID. Falls back to a simple implementation if crypto.randomUUID is not available.
+ */
+function generateUUID(): string {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  
+  // Fallback for environments without crypto.randomUUID
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
+/**
  * Renders an Astro component using server-side rendering via Vite HMR communication.
  * 
  * @param data - Component render request data
@@ -322,7 +338,15 @@ async function renderAstroComponent(
   data: RenderComponentInput, 
   timeoutMs = 5000
 ): Promise<RenderResponseMessage['data']> {
-  const id = crypto.randomUUID();
+  // Check if HMR is available (required for Astro component rendering)
+  if (!import.meta.hot) {
+    throw new Error(
+      'Astro component rendering requires Vite HMR, which is not available in production builds. ' +
+      'Static builds are not yet supported. Please use `yarn storybook` for development mode.'
+    );
+  }
+
+  const id = generateUUID();
 
   const promise = new Promise<RenderResponseMessage['data']>((resolve, reject) => {
     const timeoutId = setTimeout(() => {
@@ -334,7 +358,7 @@ async function renderAstroComponent(
   });
 
   // Send render request via Vite HMR
-  import.meta.hot?.send('astro:render:request', { ...data, id });
+  import.meta.hot.send('astro:render:request', { ...data, id });
 
   return promise;
 }

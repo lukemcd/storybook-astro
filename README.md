@@ -229,6 +229,26 @@ storybook-astro/
 
 ## Known Issues
 
+### Production Builds Not Supported
+
+**Critical Limitation**: Static Storybook builds (`yarn build-storybook`) cannot render Astro components. The current architecture relies on Vite's Hot Module Replacement (HMR) for server-side rendering communication, which is only available in development mode.
+
+When viewing Astro components in a production build, you will see the error:
+```
+Astro component rendering requires Vite HMR, which is not available in production builds. 
+Static builds are not yet supported. Please use `yarn storybook` for development mode.
+```
+
+**Impact**:
+- Astro components will fail to render in built Storybook instances
+- Deployment to static hosting (Netlify, Vercel, GitHub Pages, etc.) will not work for Astro components
+- Only the development server (`yarn storybook`) can properly render Astro components
+- Other framework components (React, Vue, Svelte, Alpine.js) continue to work in production builds
+
+**Workaround**: Use `yarn storybook` to run Storybook in development mode for viewing Astro components.
+
+**Future Solution**: Supporting static builds would require architectural changes to pre-render Astro components during the build process instead of rendering them on-demand via HMR. See the "Static Site Generation (SSG)" item under Future Considerations in the Roadmap section.
+
 ### Preact Framework Compatibility
 
 Preact components currently fail to render with the error: `TypeError: Cannot add property __, object is not extensible`. This occurs because Preact components become non-extensible after creation, preventing the framework renderer from adding necessary properties for Storybook integration. The issue persists even when using `@storybook/preact-vite` instead of `@storybook/preact`. A custom renderer solution similar to the SolidJS implementation may be required.
