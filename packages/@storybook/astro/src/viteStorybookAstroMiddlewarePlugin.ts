@@ -4,6 +4,7 @@ import type { RenderRequestMessage, RenderResponseMessage } from '@storybook/ast
 import type { FrameworkOptions } from './types.ts';
 import type { Integration } from './integrations/index.ts';
 import { viteAstroContainerRenderersPlugin } from './viteAstroContainerRenderersPlugin.ts';
+import { vitePluginAstroFontsFallback } from './vitePluginAstroFontsFallback.ts';
 
 export async function vitePluginStorybookAstroMiddleware(options: FrameworkOptions) {
   const viteServer = await createViteServer(options.integrations);
@@ -26,13 +27,18 @@ export async function vitePluginStorybookAstroMiddleware(options: FrameworkOptio
             id: data.id
           } satisfies RenderResponseMessage['data']);
         } catch (err) {
-          console.error(err);
+          const errorMessage = err instanceof Error ? err.message : String(err);
+          const errorStack = err instanceof Error ? err.stack : '';
+          console.error('[storybook-astro] Render error:', errorMessage);
+          if (errorStack) console.error(errorStack);
           server.ws.send('astro:render:response', {
             id: data.id,
             html:
-              '<div style="background: #d73838; padding: 8px; color: #f0f0f0">' +
-              'Error occurred while rendering Astro component' +
-              '</div>'
+              '<div style="background: #d73838; padding: 12px; color: #f0f0f0; font-family: monospace; border-radius: 4px">' +
+              '<strong>Error rendering Astro component</strong><br/>' +
+              '<pre style="white-space: pre-wrap; margin-top: 8px; font-size: 12px">' +
+              errorMessage.replace(/</g, '&lt;').replace(/>/g, '&gt;') +
+              '</pre></div>'
           } satisfies RenderResponseMessage['data']);
         }
       });
@@ -85,7 +91,8 @@ export async function createViteServer(integrations: Integration[]) {
     ...config,
     plugins: [
       ...(config.plugins?.filter(Boolean) ?? []),
-      viteAstroContainerRenderersPlugin(integrations)
+      viteAstroContainerRenderersPlugin(integrations),
+      vitePluginAstroFontsFallback()
     ]
   });
 

@@ -1,6 +1,7 @@
 import type { StorybookConfigVite, FrameworkOptions } from './types.ts';
 import { vitePluginStorybookAstroMiddleware } from './viteStorybookAstroMiddlewarePlugin.ts';
 import { viteStorybookRendererFallbackPlugin } from './viteStorybookRendererFallbackPlugin.ts';
+import { vitePluginAstroComponentMarker } from './vitePluginAstroComponentMarker.ts';
 import { mergeWithAstroConfig } from './vitePluginAstro.ts';
 
 export const core = {
@@ -20,6 +21,7 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (config, { pres
   config.plugins.push(
     storybookAstroMiddlewarePlugin,
     viteStorybookRendererFallbackPlugin(options.integrations),
+    vitePluginAstroComponentMarker() as any,
     ...viteConfig.plugins
   );
 

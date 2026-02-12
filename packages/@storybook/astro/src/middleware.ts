@@ -36,11 +36,59 @@ export async function handlerFactory(integrations: Integration[]) {
     // Process args to convert ImageMetadata objects to usable URLs
     const processedArgs = await processImageMetadata(data.args || {});
 
-    return container.renderToString(Component, {
+    // Wrap the component factory to fix the createAstro calling convention mismatch.
+    // Astro compiler v2 produces: result.createAstro($$Astro, $$props, $$slots) [3 args]
+    // Astro 6 runtime expects: result.createAstro($$props, $$slots) [2 args]
+    // When v2-compiled components run against the v6 runtime, $$Astro gets captured as
+    // "props" and actual props end up as "slots". This wrapper detects the 3-arg call
+    // and strips the leading $$Astro argument.
+    const patchedComponent = patchCreateAstroCompat(Component);
+
+    const result = await container.renderToString(patchedComponent, {
       props: processedArgs,
       slots: data.slots ?? {}
     });
+
+    return result;
   };
+}
+
+/**
+ * Wraps an Astro component factory to fix the createAstro calling convention mismatch
+ * between Astro compiler v2 and the Astro 6 runtime.
+ *
+ * The compiled component calls result.createAstro($$Astro, $$props, $$slots) [3 args],
+ * but the Astro 6 runtime's createResult defines createAstro(props, slots) [2 params].
+ * This causes $$Astro to be captured as "props" and actual props to be lost.
+ *
+ * The wrapper intercepts the result object and patches its createAstro method to
+ * handle both calling conventions.
+ */
+function patchCreateAstroCompat(Component: any): any {
+  const wrapped = (result: any, props: any, slots: any) => {
+    if (result && result.createAstro) {
+      const origCreateAstro = result.createAstro;
+
+      result.createAstro = (...args: any[]) => {
+        if (args.length === 3) {
+          // Compiler v2 convention: ($$Astro, $$props, $$slots) → skip $$Astro
+          return origCreateAstro(args[1], args[2]);
+        }
+
+        // Compiler v3 convention: ($$props, $$slots) → pass through
+        return origCreateAstro(...args);
+      };
+    }
+
+    return Component(result, props, slots);
+  };
+
+  // Copy component factory metadata so the Container treats it as a valid Astro component
+  wrapped.isAstroComponentFactory = Component.isAstroComponentFactory;
+  wrapped.moduleId = Component.moduleId;
+  wrapped.propagation = Component.propagation;
+
+  return wrapped;
 }
 
 /**
