@@ -146,10 +146,26 @@ export async function renderToCanvas(
   canvasElement: $FIXME
 ): Promise<void> {
   const { storyFn, kind, name, showMain, showError, forceRemount, storyContext } = ctx;
-  const element = storyFn();
   const renderer = ctx.storyContext.parameters?.renderer as string | undefined;
   const typedRenderers = renderers as RendererRegistry;
 
+  // Delegate to framework-specific renderers BEFORE calling storyFn().
+  // Framework renderers (React, Solid, Vue, etc.) manage their own reactive
+  // roots and call storyFn() internally. Calling storyFn() here first would
+  // create orphaned reactive effects that corrupt the framework's state.
+  if (renderer && Object.hasOwn(typedRenderers, renderer)) {
+    showMain();
+    await typedRenderers[renderer].renderToCanvas(ctx, canvasElement);
+    // Apply Vite styles for frameworks that need it (Svelte)
+    // Vue handles its own styles and this interferes with its CSS processing
+    if (renderer === 'svelte') {
+      applyAstroStyles();
+    }
+
+    return;
+  }
+
+  const element = storyFn();
 
   showMain();
 
@@ -163,18 +179,6 @@ export async function renderToCanvas(
   // Handle string content
   if (typeof element === 'string') {
     renderStringToCanvas(element, canvasElement);
-
-    return;
-  }
-
-  // Delegate to framework-specific renderers
-  if (renderer && Object.hasOwn(typedRenderers, renderer)) {
-    await typedRenderers[renderer].renderToCanvas(ctx, canvasElement);
-    // Apply Vite styles for frameworks that need it (Svelte)
-    // Vue handles its own styles and this interferes with its CSS processing
-    if (renderer === 'svelte') {
-      applyAstroStyles();
-    }
 
     return;
   }
