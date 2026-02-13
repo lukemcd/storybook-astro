@@ -1,16 +1,8 @@
-import { experimental_AstroContainer as AstroContainer } from 'astro/container';
-import { expect, test } from 'vitest';
-import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
-import Counter from './Counter.astro';
+import { composeStories } from '@storybook/astro';
+import { testStoryRenders, testStoryComposition } from '@storybook/astro/testing';
+import * as stories from './Counter.stories.js';
 
-async function renderAstroComponent(Component: AstroComponentFactory, renderingOptions = {}) {
-  const container = await AstroContainer.create();
+const { Default } = composeStories(stories);
 
-  document.body.innerHTML = await container.renderToString(Component, renderingOptions);
-}
-
-test('Alpine Counter renders correctly', async () => {
-  await renderAstroComponent(Counter);
-  expect(document.body.innerHTML).toBeTruthy();
-  expect(document.body.innerHTML).toContain('Alpine counter');
-});
+testStoryComposition('Default', Default);
+testStoryRenders('Alpine Counter Default', Default);

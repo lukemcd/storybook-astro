@@ -125,7 +125,7 @@ export default [
   },
   // Allow any types in experimental code
   {
-    files: ['**/portable-stories.ts', '**/middleware.ts', '**/test-utils.ts'],
+    files: ['**/portable-stories.ts', '**/middleware.ts', '**/testing.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',

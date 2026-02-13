@@ -1,5 +1,5 @@
 import ImageText from './ImageText.astro';
-import earthImage from '../../../assets/astro-storybook-earth.png';
+import storybookAstro from '../../../assets/storybook-astro.png';
 
 export default {
   title: 'Astro/ImageText',
@@ -8,7 +8,7 @@ export default {
 
 export const Default = {
   args: {
-    imageSrc: earthImage,
+    imageSrc: storybookAstro,
     imageAlt: 'Astro Storybook Earth',
     slots: {
       default: `
@@ -24,7 +24,7 @@ export const Default = {
 
 export const ImageRight = {
   args: {
-    imageSrc: earthImage,
+    imageSrc: storybookAstro,
     imageAlt: 'Astro Storybook Earth',
     reversed: true,
     slots: {

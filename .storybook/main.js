@@ -15,13 +15,13 @@ const config = {
     options: {
       integrations: [
         react({
-          include: ['**/react/*']
+          include: ['**/react/**']
         }),
         solid({
-          include: ['**/solid/*']
+          include: ['**/solid/**']
         }),
         preact({
-          include: ['**/preact/*']
+          include: ['**/preact/**']
         }),
         vue(),
         svelte(),

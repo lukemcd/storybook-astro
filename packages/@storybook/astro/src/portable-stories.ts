@@ -27,13 +27,12 @@ const render = (args: Args, context?: any) => {
   const renderer = context?.parameters?.renderer;
   const id = context?.id || 'test-story';
   
-  // For testing purposes, we'll assume these renderers are "not found" 
-  // to simulate the broken integration behavior
-  const brokenRenderers = ['preact', 'solid'];
+  // Renderers that are known to not work in the current integration
+  const brokenRenderers: string[] = [];
   
   // Mimic the renderer detection logic from the main renderer
   if (renderer && brokenRenderers.includes(renderer)) {
-    throw new Error(`Renderer '${renderer}' not found. Available renderers: react, vue, svelte`);
+    throw new Error(`Renderer '${renderer}' not found. Available renderers: react, vue, svelte, solid, preact`);
   }
   
   // For Astro components and working integrations, return a renderable object

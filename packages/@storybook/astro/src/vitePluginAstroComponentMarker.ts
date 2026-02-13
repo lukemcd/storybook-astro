@@ -12,11 +12,21 @@ import type { PluginOption } from 'vite';
  * This plugin also preserves the component's scoped CSS by importing the style sub-modules
  * that the Astro Vite plugin exposes. Without this, the client-side stub would strip all
  * CSS since Astro 6 no longer includes style imports in client-side .astro transforms.
+ *
+ * During builds, Astro's compile metadata cache is not populated for client-side transforms,
+ * so style sub-module imports would fail. Instead, raw CSS is extracted directly from the
+ * .astro source and inlined.
  */
 export function vitePluginAstroComponentMarker(): PluginOption {
+  let isBuild = false;
+
   return {
     name: 'storybook-astro-component-marker',
     enforce: 'post',
+
+    configResolved(config) {
+      isBuild = config.command === 'build';
+    },
 
     transform(code: string, id: string) {
       // Only process main .astro modules (not sub-modules like ?astro&type=style)
@@ -27,14 +37,17 @@ export function vitePluginAstroComponentMarker(): PluginOption {
 
       const moduleId = id;
 
-      // Count <style> blocks in the original source to generate CSS imports.
-      // The Astro Vite plugin exposes each <style> block as a sub-module:
-      //   Component.astro?astro&type=style&index=N&lang.css
-      const styleImports = generateStyleImports(moduleId);
+      // In dev mode, import style sub-modules via Astro's Vite plugin (which has
+      // compile metadata cached from the SSR transform).
+      // In build mode, Astro's compile metadata cache is not populated for client-side
+      // transforms, so sub-module imports would fail. Extract raw CSS instead.
+      const styleCode = isBuild
+        ? generateInlineStyles(moduleId)
+        : generateStyleImports(moduleId);
 
       return {
         code: `
-${styleImports}
+${styleCode}
 const __astro_component = () => {
   throw new Error('Astro components are rendered server-side by Storybook.');
 };
@@ -63,6 +76,56 @@ function generateStyleImports(filePath: string): string {
   } catch {
     return '';
   }
+}
+
+/**
+ * Reads the original .astro source file and generates a JS snippet that injects
+ * the raw CSS from each <style> block into the document. Used during builds where
+ * Astro's compile metadata cache is unavailable.
+ *
+ * The CSS is unscoped (no Astro scoping transforms), which is acceptable because
+ * Astro components show a fallback message in static builds.
+ */
+function generateInlineStyles(filePath: string): string {
+  try {
+    const source = readFileSync(filePath, 'utf-8');
+    const cssBlocks = extractStyleBlocks(source);
+
+    if (cssBlocks.length === 0) return '';
+
+    // Create a side-effect that injects styles into the document
+    return cssBlocks.map((css, i) => {
+      const escaped = JSON.stringify(css);
+      return `
+(function() {
+  if (typeof document !== 'undefined') {
+    const style = document.createElement('style');
+    style.setAttribute('data-astro-build', ${JSON.stringify(filePath + ':' + i)});
+    style.textContent = ${escaped};
+    document.head.appendChild(style);
+  }
+})();`;
+    }).join('\n');
+  } catch {
+    return '';
+  }
+}
+
+/**
+ * Extracts the content of all top-level <style> blocks from an Astro component's source.
+ * Strips frontmatter before parsing.
+ */
+function extractStyleBlocks(source: string): string[] {
+  const withoutFrontmatter = source.replace(/^---[\s\S]*?---/m, '');
+  const blocks: string[] = [];
+  const regex = /<style(?:\s[^>]*)?>([\s\S]*?)<\/style>/g;
+  let match;
+
+  while ((match = regex.exec(withoutFrontmatter)) !== null) {
+    blocks.push(match[1].trim());
+  }
+
+  return blocks;
 }
 
 /**

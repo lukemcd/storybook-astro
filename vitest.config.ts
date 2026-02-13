@@ -7,10 +7,21 @@ import vue from '@astrojs/vue';
 import preact from '@astrojs/preact';
 import svelte from '@astrojs/svelte';
 import alpinejs from '@astrojs/alpinejs';
-import { solidVitestPatch } from './lib/test-utils';
+import { cjsInteropPlugin } from '@storybook/astro/testing';
+import { vitePluginAstroComponentMarker } from './packages/@storybook/astro/src/vitePluginAstroComponentMarker.ts';
 
 const vitestConfig = defineConfig({
   mode: 'test',
+  plugins: [
+    // Several Astro 6 runtime dependencies (cssesc, cookie, react, etc.) are
+    // CJS modules that fail in Vite 6's ESM module runner. This plugin
+    // auto-detects and wraps them with CJS shims so they evaluate as ESM.
+    cjsInteropPlugin(),
+    // In Astro 6, the client-side transform of .astro files no longer sets
+    // isAstroComponentFactory. This plugin patches the stub so portable
+    // stories can detect Astro components.
+    vitePluginAstroComponentMarker()
+  ],
   test: {
     name: 'storybook',
     environment: 'happy-dom',
@@ -26,17 +37,20 @@ export default getViteConfig(vitestConfig as any, {
   // Tests specific astro config
   integrations: [
     react({
-      include: ['**/react/*']
+      include: ['**/react/**']
     }),
     solid({
-      include: ['**/solid/*']
+      // Use non-recursive glob so vite-plugin-solid doesn't compile test
+      // components. In the test env, Solid's SSR compilation mode conflicts
+      // with the client-side runtime (template() becomes notSup() on server).
+      // Solid rendering is validated in Storybook's browser instead.
+      include: ['**/solid/*.tsx']
     }),
     preact({
-      include: ['**/preact/*']
+      include: ['**/preact/**']
     }),
     vue(),
     svelte({ extensions: ['.svelte'] }),
-    alpinejs(),
-    solidVitestPatch()
+    alpinejs()
   ]
 });

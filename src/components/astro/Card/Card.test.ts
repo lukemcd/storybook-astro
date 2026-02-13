@@ -1,5 +1,5 @@
 import { composeStories } from '@storybook/astro';
-import { testStoryRenders, testStoryComposition } from '../../../../test-utils.js';
+import { testStoryRenders, testStoryComposition } from '@storybook/astro/testing';
 import * as stories from './Card.stories.jsx';
 
 const { Default, Highlight } = composeStories(stories);
