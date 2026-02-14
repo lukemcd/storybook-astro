@@ -56,7 +56,7 @@ export const render: ArgsStoryFn<AstroRenderer> = (args, context) => {
 
   // Handle function components (including Astro components)
   if (typeof Component === 'function') {
-    const astroComponent = Component as AstroComponentFactory;
+    const astroComponent = Component as unknown as AstroComponentFactory;
     
     // Return Astro components as-is for server-side rendering
     if (astroComponent.isAstroComponentFactory) {
@@ -162,7 +162,7 @@ export async function renderToCanvas(
 
   // Handle Astro components with server-side rendering
   if (isAstroComponent(element)) {
-    await renderAstroToCanvas(element as AstroComponentFactory, storyContext.args, canvasElement, storyContext);
+    await renderAstroToCanvas(element, storyContext.args, canvasElement, storyContext);
 
     return;
   }
@@ -201,8 +201,7 @@ function isAstroComponent(element: unknown): element is AstroComponentFactory {
     'isAstroComponentFactory' in element &&
     (element as AstroComponentFactory).isAstroComponentFactory === true
   );
-  
-  
+
   return result;
 }
 
