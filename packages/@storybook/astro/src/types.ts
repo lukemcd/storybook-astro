@@ -4,9 +4,6 @@ import type { Integration } from './integrations/index.ts';
 
 type FrameworkName = CompatibleString<'@storybook/astro'>;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type $FIXME = any;
-
 export type { Integration };
 export type FrameworkOptions = {
   integrations: Integration[];

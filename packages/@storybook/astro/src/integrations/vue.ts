@@ -12,8 +12,7 @@ const DEFAULT_OPTIONS: Options = {
 
 export class VueIntegration implements Integration {
   readonly name = 'vue';
-  // FIXME: Add missing dependencies
-  readonly dependencies = ['@astrojs/vue', '@storybook/vue3'];
+  readonly dependencies = ['@astrojs/vue', '@storybook/vue3', 'vue'];
   readonly options: Options;
   readonly storybookEntryPreview = '@storybook/vue3/entry-preview';
 
