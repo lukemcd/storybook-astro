@@ -89,8 +89,8 @@ Storybook Canvas (rendered component)
 - **Workspace Protocol**: Use `workspace:*` for internal package dependencies
 
 ### TypeScript
-- TypeScript is used but loosely typed in many places
-- `$FIXME` type is used as a temporary `any` replacement
+- TypeScript is used with proper types where possible
+- `AstroRenderer` (extending `WebRenderer`) is the canonical renderer type used for Storybook generics
 - Type definitions are in `types.ts` files in each package
 
 ### Naming

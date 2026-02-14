@@ -1,5 +1,21 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type $FIXME = any;
+import type { WebRenderer } from 'storybook/internal/types';
+
+/**
+ * Storybook renderer type for Astro components.
+ *
+ * Astro components are server-side rendered, so storyResult can be an Astro component
+ * factory (routed to SSR), a string (HTML), or an HTMLElement (DOM node).
+ */
+export interface AstroRenderer extends WebRenderer {
+  component: AstroComponentFactory | string | HTMLElement | ((...args: unknown[]) => unknown);
+  storyResult: AstroComponentFactory | string | HTMLElement;
+}
+
+/** Minimal type for an Astro component factory as seen by the client-side renderer. */
+export type AstroComponentFactory = {
+  isAstroComponentFactory: boolean;
+  moduleId?: string;
+};
 
 export type RenderComponentInput = {
   component: string;
@@ -34,9 +50,12 @@ export type RenderPromise = {
 declare global {
   interface Window {
     preact?: {
-      h: (type: $FIXME, props: $FIXME, ...children: $FIXME[]) => $FIXME;
-      render: (element: $FIXME, container: HTMLElement) => void;
+      h: (type: string | Function, props: Record<string, unknown> | null, ...children: unknown[]) => unknown;
+      render: (element: unknown, container: HTMLElement) => void;
     };
-    Alpine?: $FIXME;
+    Alpine?: {
+      start: () => void;
+      _isStarted?: boolean;
+    };
   }
 }

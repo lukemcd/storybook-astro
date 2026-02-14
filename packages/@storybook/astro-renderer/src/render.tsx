@@ -1,24 +1,13 @@
 import { simulateDOMContentLoaded, simulatePageLoad } from 'storybook/internal/preview-api';
-import type { ArgsStoryFn, RenderContext } from 'storybook/internal/types';
+import type { ArgsStoryFn, Renderer, RenderContext, StoryContext } from 'storybook/internal/types';
 import { dedent } from 'ts-dedent';
 import 'astro:scripts/page.js';
-import type { $FIXME, RenderComponentInput, RenderPromise, RenderResponseMessage } from './types';
+import type { AstroComponentFactory, AstroRenderer, RenderComponentInput, RenderPromise, RenderResponseMessage } from './types';
 import * as renderers from 'virtual:storybook-renderer-fallback';
 
-// Types for better type safety
-type AstroComponent = {
-  isAstroComponentFactory: boolean;
-  moduleId?: string;
-};
-
-type AlpineJS = {
-  start: () => void;
-  _isStarted?: boolean;
-};
-
 type FallbackRenderer = {
-  render: (args: Record<string, unknown>, context: $FIXME) => unknown;
-  renderToCanvas: (ctx: RenderContext<$FIXME>, canvasElement: $FIXME) => void | Promise<void>;
+  render: (args: Record<string, unknown>, context: StoryContext<Renderer>) => unknown;
+  renderToCanvas: (ctx: RenderContext<Renderer>, canvasElement: HTMLElement) => void | Promise<void>;
 };
 
 type RendererRegistry = Record<string, FallbackRenderer>;
@@ -36,14 +25,16 @@ const messages = new Map<string, RenderPromise>();
  * @param context - Storybook render context containing component and metadata
  * @returns Rendered component or element
  */
-export const render: ArgsStoryFn<$FIXME> = (args, context) => {
+export const render: ArgsStoryFn<AstroRenderer> = (args, context) => {
   const { id, component: Component } = context;
   const renderer = context.parameters?.renderer as string | undefined;
   const typedRenderers = renderers as RendererRegistry;
 
   // Delegate to framework-specific renderers (React, Vue, Solid, etc.)
+  // The cast is safe: delegated results are consumed by the matching framework's renderToCanvas,
+  // not by the Astro renderer pipeline.
   if (renderer && Object.hasOwn(typedRenderers, renderer)) {
-    return typedRenderers[renderer].render(args, context);
+    return typedRenderers[renderer].render(args, context) as AstroRenderer['storyResult'];
   }
 
   // Validate component exists
@@ -65,11 +56,11 @@ export const render: ArgsStoryFn<$FIXME> = (args, context) => {
 
   // Handle function components (including Astro components)
   if (typeof Component === 'function') {
-    const astroComponent = Component as AstroComponent;
+    const astroComponent = Component as unknown as AstroComponentFactory;
     
     // Return Astro components as-is for server-side rendering
     if (astroComponent.isAstroComponentFactory) {
-      return Component;
+      return astroComponent;
     }
 
     // If we have a renderer parameter but didn't delegate above, the renderer may not be loaded correctly
@@ -142,8 +133,8 @@ function cloneElementWithArgs(element: HTMLElement, args: Record<string, unknown
  * strings, DOM nodes, and framework-specific components.
  */
 export async function renderToCanvas(
-  ctx: RenderContext<$FIXME>,
-  canvasElement: $FIXME
+  ctx: RenderContext<AstroRenderer>,
+  canvasElement: HTMLElement
 ): Promise<void> {
   const { storyFn, kind, name, showMain, showError, forceRemount, storyContext } = ctx;
   const renderer = ctx.storyContext.parameters?.renderer as string | undefined;
@@ -203,15 +194,14 @@ export async function renderToCanvas(
 /**
  * Type guard to check if an element is an Astro component.
  */
-function isAstroComponent(element: unknown): element is AstroComponent {
+function isAstroComponent(element: unknown): element is AstroComponentFactory {
   const result = (
     typeof element === 'function' &&
     element !== null &&
     'isAstroComponentFactory' in element &&
-    (element as AstroComponent).isAstroComponentFactory === true
+    (element as AstroComponentFactory).isAstroComponentFactory === true
   );
-  
-  
+
   return result;
 }
 
@@ -222,10 +212,10 @@ function isAstroComponent(element: unknown): element is AstroComponent {
  * vitePluginAstroBuildPrerender) before falling back to the HMR path.
  */
 async function renderAstroToCanvas(
-  element: AstroComponent,
+  element: AstroComponentFactory,
   args: Record<string, unknown>,
-  canvasElement: $FIXME,
-  storyContext?: $FIXME
+  canvasElement: HTMLElement,
+  storyContext?: StoryContext<AstroRenderer>
 ): Promise<void> {
   // In static builds, use build-time pre-rendered HTML if available
   const prerenderedHtml = storyContext?.parameters?.__astroPrerendered;
@@ -256,7 +246,7 @@ async function renderAstroToCanvas(
 /**
  * Renders string content to the canvas.
  */
-function renderStringToCanvas(content: string, canvasElement: $FIXME): void {
+function renderStringToCanvas(content: string, canvasElement: HTMLElement): void {
   canvasElement.innerHTML = content;
   simulatePageLoad(canvasElement);
 }
@@ -266,7 +256,7 @@ function renderStringToCanvas(content: string, canvasElement: $FIXME): void {
  */
 function renderNodeToCanvas(
   element: Node,
-  canvasElement: $FIXME,
+  canvasElement: HTMLElement,
   forceRemount: boolean
 ): void {
   // Skip if same element and no remount needed
@@ -309,7 +299,7 @@ function applyAstroStyles(): void {
  * Activates script tags within a container by replacing them with executable versions.
  * This is necessary because innerHTML doesn't execute scripts for security reasons.
  */
-function activateScriptTags(container: $FIXME): void {
+function activateScriptTags(container: HTMLElement): void {
   const scriptElements = container.querySelectorAll('script') as NodeListOf<HTMLScriptElement>;
   
   Array.from(scriptElements).forEach((oldScript: HTMLScriptElement) => {
@@ -396,11 +386,9 @@ async function renderAstroComponent(
  */
 function initializeAlpineJS(): void {
   if ('Alpine' in window && window.Alpine) {
-    const alpine = window.Alpine as AlpineJS;
-    
     // Only start Alpine if it hasn't been started yet
-    if (!alpine._isStarted) {
-      alpine.start();
+    if (!window.Alpine._isStarted) {
+      window.Alpine.start();
     }
   }
 }
