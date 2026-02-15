@@ -1,0 +1,24 @@
+name: Branch Protection
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  check-pr-direction:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR direction
+        run: |
+          BASE_BRANCH="${{ github.base_ref }}"
+          HEAD_BRANCH="${{ github.head_ref }}"
+          
+          echo "Base branch: $BASE_BRANCH"
+          echo "Head branch: $HEAD_BRANCH"
+          
+          if [[ "$BASE_BRANCH" == "develop" && "$HEAD_BRANCH" == "main" ]]; then
+            echo "::error::❌ Cannot merge main into develop. Please reverse the PR direction."
+            exit 1
+          fi
+          
+          echo "✅ PR direction is valid"
