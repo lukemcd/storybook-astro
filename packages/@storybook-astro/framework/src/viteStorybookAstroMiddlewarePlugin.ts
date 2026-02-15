@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url';
 import { createServer, type PluginOption, type ViteDevServer } from 'vite';
-import type { RenderRequestMessage, RenderResponseMessage } from '@storybook/astro-renderer/types';
+import type { RenderRequestMessage, RenderResponseMessage } from '@storybook-astro/renderer/types';
 import type { FrameworkOptions } from './types.ts';
 import type { Integration } from './integrations/index.ts';
 import { viteAstroContainerRenderersPlugin } from './viteAstroContainerRenderersPlugin.ts';

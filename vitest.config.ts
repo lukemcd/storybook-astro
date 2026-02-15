@@ -7,8 +7,8 @@ import vue from '@astrojs/vue';
 import preact from '@astrojs/preact';
 import svelte from '@astrojs/svelte';
 import alpinejs from '@astrojs/alpinejs';
-import { cjsInteropPlugin } from '@storybook/astro/testing';
-import { vitePluginAstroComponentMarker } from './packages/@storybook/astro/src/vitePluginAstroComponentMarker.ts';
+import { cjsInteropPlugin } from '@storybook-astro/framework/testing';
+import { vitePluginAstroComponentMarker } from './packages/@storybook-astro/framework/src/vitePluginAstroComponentMarker.ts';
 
 const vitestConfig = defineConfig({
   mode: 'test',

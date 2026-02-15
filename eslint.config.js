@@ -17,14 +17,14 @@ import astro from 'eslint-plugin-astro';
 
 const ALL_EXTENSIONS = 'js,ts,jsx,tsx,cjs,mjs,mts,astro,svelte,vue';
 const NODE_JS_FILES = [
-  `./packages/@storybook/astro/**/*.{${ALL_EXTENSIONS}}`,
+  `./packages/@storybook-astro/framework/**/*.{${ALL_EXTENSIONS}}`,
   `./.storybook/**/*.{${ALL_EXTENSIONS}}`,
   'eslint.config.mjs',
   'prettier.config.mjs'
 ];
 const JSX_EXTENSIONS = 'js,ts,jsx,tsx,cjs,mjs,mts';
 const JSX_FILES = [
-  `./packages/@storybook/astro-renderer/**/*.{${JSX_EXTENSIONS}}`,
+  `./packages/@storybook-astro/renderer/**/*.{${JSX_EXTENSIONS}}`,
   `./src/**/*.{${JSX_EXTENSIONS}}`
 ];
 

@@ -1,8 +1,36 @@
-# @storybook/astro
+# Storybook Astro
 
-An experimental Storybook framework implementation that enables support for Astro components in Storybook.
+The community-supported Storybook framework for Astro. Build, test, and document your Astro components in Storybook's interactive environment.
 
-> **⚠️ Experimental**: This is an experimental project and is not ready for production use. The implementation is actively being developed and tested.
+> **Beta**: This project is in active development. APIs may change between releases. Feedback and contributions are welcome!
+
+**Website**: [storybook-astro.org](https://storybook-astro.org) · **npm**: [@storybook-astro/framework](https://www.npmjs.com/package/@storybook-astro/framework) · **GitHub**: [storybook-astro](https://github.com/lukemcd/storybook-astro)
+
+## Quick Start
+
+```bash
+npm install @storybook-astro/framework
+```
+
+Configure in `.storybook/main.js`:
+
+```javascript
+import { react, vue, svelte } from '@storybook-astro/framework/integrations';
+
+export default {
+  stories: ['../src/**/*.stories.@(js|jsx|ts|tsx)'],
+  framework: {
+    name: '@storybook-astro/framework',
+    options: {
+      integrations: [
+        react({ include: ['**/react/**'] }),
+        vue(),
+        svelte(),
+      ],
+    },
+  },
+};
+```
 
 ## Requirements
 
@@ -26,7 +54,7 @@ This package provides a complete Storybook framework integration for Astro compo
 
 The package consists of two main components:
 
-### 1. `@storybook/astro` (Framework Package)
+### 1. `@storybook-astro/framework` (Framework Package)
 
 The core framework implementation that integrates Astro with Storybook's build system:
 
@@ -44,7 +72,7 @@ The core framework implementation that integrates Astro with Storybook's build s
 - `src/vitePluginAstroComponentMarker.ts` - Patches Astro 6's client-side `.astro` stubs for Storybook
 - `src/vitePluginAstroFontsFallback.ts` - Stubs Astro 6's font virtual modules
 
-### 2. `@storybook/astro-renderer` (Client Renderer)
+### 2. `@storybook-astro/renderer` (Client Renderer)
 
 The client-side rendering package that manages how Astro components are displayed in Storybook's preview:
 
@@ -162,8 +190,8 @@ The package includes a `composeStories` function that enables testing of Storybo
 
 ```javascript
 // Card.test.ts
-import { composeStories } from '@storybook/astro';
-import { testStoryRenders, testStoryComposition } from '@storybook/astro/testing';
+import { composeStories } from '@storybook-astro/framework';
+import { testStoryRenders, testStoryComposition } from '@storybook-astro/framework/testing';
 import * as stories from './Card.stories.jsx';
 
 const { Default, Highlighted } = composeStories(stories);
@@ -181,7 +209,7 @@ The test suite validates the health of all framework integrations by attempting 
 
 ### Vitest / Vite 6 Compatibility
 
-Vite 6's ESM module runner cannot evaluate raw CommonJS modules. The `cjsInteropPlugin()` from `@storybook/astro/testing` handles this by:
+Vite 6's ESM module runner cannot evaluate raw CommonJS modules. The `cjsInteropPlugin()` from `@storybook-astro/framework/testing` handles this by:
 - Redirecting bare package imports to their ESM entry points via `resolveId`
 - Auto-detecting and wrapping remaining CJS modules with ESM-compatible shims (providing `module`, `exports`, `require`, `__dirname`, `__filename`)
 
@@ -199,10 +227,10 @@ Solid components render correctly in Storybook's browser, but the Vitest config 
 
 ### Test Utilities
 
-All testing utilities are available from the `@storybook/astro/testing` entry point:
+All testing utilities are available from the `@storybook-astro/framework/testing` entry point:
 
 ```javascript
-import { testStoryRenders, testStoryComposition, cjsInteropPlugin } from '@storybook/astro/testing';
+import { testStoryRenders, testStoryComposition, cjsInteropPlugin } from '@storybook-astro/framework/testing';
 ```
 
 - `testStoryComposition(name, story)` - Verifies story can be imported and composed
@@ -216,11 +244,11 @@ These utilities provide consistent testing patterns across all component tests.
 Configure framework integrations in `.storybook/main.js`:
 
 ```javascript
-import { react, vue, svelte, preact, solid, alpinejs } from '@storybook/astro/integrations';
+import { react, vue, svelte, preact, solid, alpinejs } from '@storybook-astro/framework/integrations';
 
 export default {
   framework: {
-    name: '@storybook/astro',
+    name: '@storybook-astro/framework',
     options: {
       integrations: [
         react({ include: ['**/react/**'] }),
@@ -321,7 +349,7 @@ Astro 6 introduced several breaking changes to how components are transformed an
 
 **Problem**: Vite 6's ESM module runner cannot evaluate raw CommonJS modules (e.g. `cssesc`, `cookie`, `react`). Several Astro 6 runtime dependencies are still CJS.
 
-**Solution**: `cjsInteropPlugin()` from `@storybook/astro/testing` auto-detects CJS modules and wraps them with ESM-compatible shims providing `module`, `exports`, `require`, `__dirname`, and `__filename`. It also redirects bare package imports to ESM entry points when available. This plugin is used in `vitest.config.ts`.
+**Solution**: `cjsInteropPlugin()` from `@storybook-astro/framework/testing` auto-detects CJS modules and wraps them with ESM-compatible shims providing `module`, `exports`, `require`, `__dirname`, and `__filename`. It also redirects bare package imports to ESM entry points when available. This plugin is used in `vitest.config.ts`.
 
 ## Roadmap: Astro Framework Feature Support
 

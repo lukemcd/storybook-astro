@@ -1,4 +1,4 @@
-import { setProjectAnnotations } from '@storybook/astro';
+import { setProjectAnnotations } from '@storybook-astro/framework';
 import * as projectAnnotations from './preview';
 
 // This is an important step to apply the right configuration when testing your stories.

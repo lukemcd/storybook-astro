@@ -7,7 +7,7 @@ import { mergeWithAstroConfig } from './vitePluginAstro.ts';
 
 export const core = {
   builder: '@storybook/builder-vite',
-  renderer: '@storybook/astro-renderer'
+  renderer: '@storybook-astro/renderer'
 };
 
 export const viteFinal: StorybookConfigVite['viteFinal'] = async (config, { presets }) => {

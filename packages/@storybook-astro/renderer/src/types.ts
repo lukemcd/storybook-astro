@@ -50,7 +50,7 @@ export type RenderPromise = {
 declare global {
   interface Window {
     preact?: {
-      h: (type: string | Function, props: Record<string, unknown> | null, ...children: unknown[]) => unknown;
+      h: (type: string | ((props: Record<string, unknown>) => unknown), props: Record<string, unknown> | null, ...children: unknown[]) => unknown;
       render: (element: unknown, container: HTMLElement) => void;
     };
     Alpine?: {
