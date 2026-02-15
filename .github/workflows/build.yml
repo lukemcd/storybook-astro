@@ -31,9 +31,8 @@ jobs:
       - name: Build Astro
         run: yarn build
 
-      #   # Build Storybook (currently hangs)
-      # - name: Build Storybook
-      #   run: yarn build-storybook
+      - name: Build Storybook
+        run: yarn build-storybook
 
       - name: Run tests
         run: yarn test
