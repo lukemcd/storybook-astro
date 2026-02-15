@@ -1,6 +1,6 @@
 # AGENTS.md - AI Development Guide
 
-This document provides guidance for AI assistants working on the `@storybook/astro` project. It covers architecture, conventions, and common development tasks.
+This document provides guidance for AI assistants working on the `@storybook-astro/framework` project. It covers architecture, conventions, and common development tasks.
 
 ## Project Overview
 
@@ -19,7 +19,7 @@ This document provides guidance for AI assistants working on the `@storybook/ast
 
 ### Two-Package System
 
-#### 1. `packages/@storybook/astro` (Server/Framework)
+#### 1. `packages/@storybook-astro/framework` (Server/Framework)
 **Purpose**: Storybook framework definition and server-side rendering
 
 **Key Responsibilities**:
@@ -37,7 +37,7 @@ This document provides guidance for AI assistants working on the `@storybook/ast
 - `src/portable-stories.ts` - `composeStories`/`composeStory` for testing outside Storybook
 - `src/integrations/` - Integration adapters for each supported framework
 
-#### 2. `packages/@storybook/astro-renderer` (Client)
+#### 2. `packages/@storybook-astro/renderer` (Client)
 **Purpose**: Client-side rendering logic in Storybook's preview iframe
 
 **Key Responsibilities**:
@@ -56,13 +56,13 @@ This document provides guidance for AI assistants working on the `@storybook/ast
 ```
 Story File (.stories.jsx)
     ↓
-@storybook/astro-renderer (render.tsx)
+@storybook-astro/renderer (render.tsx)
     ↓ [detects isAstroComponentFactory flag]
     ↓ [sends render request via Vite HMR]
-@storybook/astro (middleware.ts)
+@storybook-astro/framework (middleware.ts)
     ↓ [patchCreateAstroCompat wraps component]
     ↓ [Astro Container API renders to HTML]
-@storybook/astro-renderer (render.tsx)
+@storybook-astro/renderer (render.tsx)
     ↓ [injects HTML into canvas]
     ↓ [applies scoped styles, executes client scripts]
 Storybook Canvas (rendered component)
@@ -72,7 +72,7 @@ Storybook Canvas (rendered component)
 ```
 Story File (.stories.jsx)
     ↓
-@storybook/astro-renderer (render.tsx)
+@storybook-astro/renderer (render.tsx)
     ↓ [checks parameters.renderer]
     ↓ [delegates to framework renderToCanvas BEFORE calling storyFn()]
 Framework Renderer (e.g. @storybook/react-vite)
@@ -94,7 +94,7 @@ Storybook Canvas (rendered component)
 - Type definitions are in `types.ts` files in each package
 
 ### Naming
-- Framework integration files: `packages/@storybook/astro/src/integrations/[framework].ts`
+- Framework integration files: `packages/@storybook-astro/framework/src/integrations/[framework].ts`
 - Vite plugins: Prefixed with `vite` or `vitePlugin`
 - Virtual modules: Named like `virtual:astro-container-renderers`
 
@@ -111,7 +111,7 @@ import { handlerFactory } from './middleware';
 
 ### Adding a New Framework Integration
 
-1. Create integration file: `packages/@storybook/astro/src/integrations/[framework].ts`
+1. Create integration file: `packages/@storybook-astro/framework/src/integrations/[framework].ts`
 2. Extend `BaseIntegration` class from `base.ts`
 3. Implement required methods:
    - `getAstroRenderer()` - Returns Astro integration
@@ -174,8 +174,8 @@ export class FrameworkIntegration extends BaseIntegration {
 **Enable Verbose Logging**:
 ```javascript
 // Add console.log statements in:
-// - packages/@storybook/astro/src/middleware.ts (server rendering)
-// - packages/@storybook/astro-renderer/src/render.tsx (client rendering)
+// - packages/@storybook-astro/framework/src/middleware.ts (server rendering)
+// - packages/@storybook-astro/renderer/src/render.tsx (client rendering)
 ```
 
 **Check Vite HMR Communication**:
@@ -209,18 +209,18 @@ console.log('Container created:', container);
 #### Testing Architecture
 
 **Portable Stories (`composeStories`)**:
-The project includes a complete `composeStories` implementation in `packages/@storybook/astro/src/portable-stories.ts` that enables testing Storybook stories outside the Storybook environment.
+The project includes a complete `composeStories` implementation in `packages/@storybook-astro/framework/src/portable-stories.ts` that enables testing Storybook stories outside the Storybook environment.
 
 ```typescript
 // Available functions
-import { composeStories, composeStory, setProjectAnnotations } from '@storybook/astro';
+import { composeStories, composeStory, setProjectAnnotations } from '@storybook-astro/framework';
 
 // Example usage
 const { Default, Highlighted } = composeStories(stories);
 ```
 
 **Test Utilities**:
-All test utilities are available from `@storybook/astro/testing` (`packages/@storybook/astro/src/testing.ts`):
+All test utilities are available from `@storybook-astro/framework/testing` (`packages/@storybook-astro/framework/src/testing.ts`):
 
 - `testStoryComposition(name, story)` - Verifies story can be imported and composed
 - `testStoryRenders(name, story)` - Validates story renders successfully in Storybook context
@@ -237,8 +237,8 @@ Solid components render correctly in Storybook's browser but have an SSR/client 
 **Test Structure**:
 All component tests follow a uniform pattern:
 ```typescript
-import { composeStories } from '@storybook/astro';
-import { testStoryRenders, testStoryComposition } from '@storybook/astro/testing';
+import { composeStories } from '@storybook-astro/framework';
+import { testStoryRenders, testStoryComposition } from '@storybook-astro/framework/testing';
 import * as stories from './Component.stories.jsx';
 
 const { Default } = composeStories(stories);
@@ -252,7 +252,7 @@ testStoryRenders('Component Default', Default);
 
 ### Developing Portable Stories
 
-**Implementation Location**: `packages/@storybook/astro/src/portable-stories.ts`
+**Implementation Location**: `packages/@storybook-astro/framework/src/portable-stories.ts`
 
 The portable stories implementation provides testing capabilities outside Storybook. Key components:
 
@@ -342,7 +342,7 @@ export const MyStory = {
 
 ### CJS Modules Failing in Tests
 **Symptom**: `SyntaxError: Cannot use import statement` or `module is not defined` in Vitest
-**Fix**: The `cjsInteropPlugin()` from `@storybook/astro/testing` wraps CJS modules for Vite 6's ESM runner. If a new CJS dependency causes failures, check that the plugin's detection heuristics (`module.exports`/`exports.` patterns) match the module's format.
+**Fix**: The `cjsInteropPlugin()` from `@storybook-astro/framework/testing` wraps CJS modules for Vite 6's ESM runner. If a new CJS dependency causes failures, check that the plugin's detection heuristics (`module.exports`/`exports.` patterns) match the module's format.
 
 ## Development Workflow
 
@@ -363,7 +363,7 @@ export const MyStory = {
 
 When asking for help from AI or humans:
 1. Include the full error message and stack trace
-2. Specify which package the issue is in (`@storybook/astro` vs `@storybook/astro-renderer`)
+2. Specify which package the issue is in (`@storybook-astro/framework` vs `@storybook-astro/renderer`)
 3. Mention what you were trying to accomplish
 4. Include relevant code snippets with file paths
 5. Note whether the issue is server-side (Node/Vite) or client-side (browser)
@@ -375,7 +375,7 @@ These are the key adaptations made for Astro 6 beta. If Astro's APIs change in f
 1. **`vitePluginAstroComponentMarker.ts`** — Detects the Astro 6 client-side stub pattern and replaces it. If Astro changes the stub text or reintroduces `isAstroComponentFactory`, this plugin may need updating or removal.
 2. **`patchCreateAstroCompat()` in `middleware.ts`** — Bridges the 3-arg (compiler v2) and 2-arg (compiler v3/Astro 6) `createAstro` calling conventions. Can be removed once the compiler is updated to match the runtime.
 3. **`vitePluginAstroFontsFallback.ts`** — Stubs font virtual modules. Can be removed if Astro's font plugin properly handles the Storybook SSR context.
-4. **`cjsInteropPlugin()` in `@storybook/astro/testing`** — Wraps CJS modules for Vite 6+'s ESM runner. May be simplified as dependencies migrate to ESM.
+4. **`cjsInteropPlugin()` in `@storybook-astro/framework/testing`** — Wraps CJS modules for Vite 6+'s ESM runner. May be simplified as dependencies migrate to ESM.
 5. **Framework delegation order in `render.tsx`** — `renderToCanvas()` delegates to framework renderers BEFORE calling `storyFn()`. This ordering was changed for Astro 6's updated framework integrations; reverting it would break Solid and potentially other reactive frameworks.
 
 ## Future Considerations

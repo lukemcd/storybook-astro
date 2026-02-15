@@ -1,5 +1,5 @@
 /**
- * Testing utilities for @storybook/astro
+ * Testing utilities for @storybook-astro/framework
  *
  * Provides test helpers for validating Storybook stories in Vitest,
  * and Vite plugins needed for the test environment.
@@ -7,8 +7,8 @@
  * @example
  * ```ts
  * // In a test file:
- * import { composeStories } from '@storybook/astro';
- * import { testStoryRenders, testStoryComposition } from '@storybook/astro/testing';
+ * import { composeStories } from '@storybook-astro/framework';
+ * import { testStoryRenders, testStoryComposition } from '@storybook-astro/framework/testing';
  * import * as stories from './Card.stories.jsx';
  *
  * const { Default } = composeStories(stories);
@@ -19,7 +19,7 @@
  * @example
  * ```ts
  * // In vitest.config.ts:
- * import { cjsInteropPlugin } from '@storybook/astro/testing';
+ * import { cjsInteropPlugin } from '@storybook-astro/framework/testing';
  * import { defineConfig } from 'vitest/config';
  *
  * export default defineConfig({
@@ -152,7 +152,7 @@ export function testStoryComposition(storyName: string, story: any, expectedArgs
  *
  * @example
  * ```ts
- * import { cjsInteropPlugin } from '@storybook/astro/testing';
+ * import { cjsInteropPlugin } from '@storybook-astro/framework/testing';
  *
  * export default defineConfig({
  *   plugins: [cjsInteropPlugin()],

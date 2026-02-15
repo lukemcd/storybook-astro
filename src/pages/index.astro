@@ -5,17 +5,22 @@ import storybookAstro from '../assets/storybook-astro.png';
 ---
 
 <Layout title="Home - Storybook Astro">
-  <h1>Welcome to Storybook Astro</h1>
-  <p>
-    An experimental Storybook framework implementation that brings Astro components into Storybook's 
-    interactive development environment. Build, test, and document your Astro components with the power 
-    of Storybook's tooling.
+  <h1>Storybook Astro</h1>
+  <p class="tagline">
+    The community-supported Storybook framework for Astro 6.
   </p>
   <p>
-    This project enables server-side rendering of Astro components using Astro's Container API, with 
-    support for multiple UI frameworks including React, Vue, Svelte, Solid, Preact, and Alpine.js—all 
-    within Storybook.
+    Build, test, and document your Astro components in Storybook's interactive development environment.
+    Render Astro components server-side via the Container API, with support for React, Vue, Svelte, 
+    Solid, Preact, and Alpine.js—all within Storybook.
   </p>
+
+  <div class="links">
+    <a href="https://demo.storybook-astro.org" class="link">Live Demo</a>
+    <a href="https://www.npmjs.com/package/@storybook-astro/framework" class="link">npm</a>
+    <a href="https://github.com/lukemcd/storybook-astro" class="link">GitHub</a>
+    <a href="/contribute" class="link">Contribute</a>
+  </div>
 
   <ImageText imageSrc={storybookAstro} imageAlt="Storybook Astro">
     <h2>See It In Action</h2>
@@ -33,12 +38,40 @@ import storybookAstro from '../assets/storybook-astro.png';
 
 <style>
   h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .tagline {
+    font-size: 1.25rem;
+    color: #4ecca3;
+    font-weight: 600;
     margin-bottom: 1.5rem;
   }
 
   p {
     margin-bottom: 1rem;
     line-height: 1.6;
+  }
+
+  .links {
+    display: flex;
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .link {
+    color: #4ecca3;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px solid #4ecca3;
+    border-radius: 6px;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .link:hover {
+    background-color: #4ecca3;
+    color: #1a1a2e;
   }
 
   .image-text {
