@@ -47,6 +47,7 @@ export function vitePluginAstroBuildPrerender(integrations: Integration[]): Plug
         const middleware = await viteServer.ssrLoadModule(filePath, {
           fixStacktrace: true
         });
+
         handler = await middleware.handlerFactory(integrations);
       } catch (err) {
         console.warn(
@@ -57,23 +58,27 @@ export function vitePluginAstroBuildPrerender(integrations: Integration[]): Plug
     },
 
     async transform(code, id) {
-      if (!handler || !viteServer) return null;
+      if (!handler || !viteServer) {return null;}
 
       // Only process story files
-      if (!/\.stories\.(jsx?|tsx?|mjs)$/.test(id)) return null;
+      if (!/\.stories\.(jsx?|tsx?|mjs)$/.test(id)) {return null;}
 
       // Parse AST to find .astro imports
       const ast = this.parse(code);
       const astroImport = findFirstAstroImport(ast);
-      if (!astroImport) return null;
+
+      if (!astroImport) {return null;}
 
       // Resolve the .astro import to an absolute path
       const resolved = await this.resolve(astroImport.source, id);
-      if (!resolved) return null;
+
+      if (!resolved) {return null;}
       const componentPath = resolved.id;
 
       // Load the story module via SSR to get fully evaluated args
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let storyModule: Record<string, any>;
+
       try {
         storyModule = await viteServer.ssrLoadModule(id);
       } catch (err) {
@@ -81,13 +86,14 @@ export function vitePluginAstroBuildPrerender(integrations: Integration[]): Plug
           `[storybook-astro] Failed to load story for pre-render: ${id}`,
           err instanceof Error ? err.message : err
         );
-        return null;
+        
+return null;
       }
 
       const meta = storyModule.default || {};
 
       // Confirm the meta component is an Astro component
-      if (!meta.component?.isAstroComponentFactory) return null;
+      if (!meta.component?.isAstroComponentFactory) {return null;}
 
       // Find all named exports that are story objects
       const storyNames = Object.keys(storyModule).filter(
@@ -98,7 +104,7 @@ export function vitePluginAstroBuildPrerender(integrations: Integration[]): Plug
           storyModule[k] !== null
       );
 
-      if (storyNames.length === 0) return null;
+      if (storyNames.length === 0) {return null;}
 
       // Pre-render each story
       const prerendered: Record<string, string> = {};
@@ -108,7 +114,7 @@ export function vitePluginAstroBuildPrerender(integrations: Integration[]): Plug
 
         // Skip stories that override the component — the resolved path
         // corresponds to the meta component and may not match
-        if (story.component && story.component !== meta.component) continue;
+        if (story.component && story.component !== meta.component) {continue;}
 
         // Merge meta args with story args (story args take precedence)
         const mergedArgs = { ...meta.args, ...story.args };
@@ -123,6 +129,7 @@ export function vitePluginAstroBuildPrerender(integrations: Integration[]): Plug
           // Rewrite /@fs dev-server URLs to Rollup asset placeholders.
           // The actual files are emitted via this.emitFile and the
           // placeholders are resolved to final paths in renderChunk.
+
           prerendered[name] = emitAndRewriteAssetUrls(html, this, assetRefIds);
         } catch (err) {
           console.warn(
@@ -132,7 +139,7 @@ export function vitePluginAstroBuildPrerender(integrations: Integration[]): Plug
         }
       }
 
-      if (Object.keys(prerendered).length === 0) return null;
+      if (Object.keys(prerendered).length === 0) {return null;}
 
       // Append code that injects pre-rendered HTML as story parameters.
       // This runs as module-level side effects during import, before
@@ -155,14 +162,15 @@ export function vitePluginAstroBuildPrerender(integrations: Integration[]): Plug
     },
 
     renderChunk(code) {
-      if (assetRefIds.size === 0) return null;
+      if (assetRefIds.size === 0) {return null;}
 
       let result = code;
       let modified = false;
 
       for (const [placeholder, refId] of assetRefIds) {
-        if (!result.includes(placeholder)) continue;
+        if (!result.includes(placeholder)) {continue;}
         const fileName = this.getFileName(refId);
+
         result = result.replaceAll(placeholder, fileName);
         modified = true;
       }
@@ -184,6 +192,7 @@ export function vitePluginAstroBuildPrerender(integrations: Integration[]): Plug
  * Finds the first import declaration with a .astro source in the ESTree AST.
  */
 function findFirstAstroImport(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ast: any
 ): { local: string; source: string } | null {
   for (const node of ast.body) {
@@ -193,8 +202,10 @@ function findFirstAstroImport(
       node.source.value.endsWith('.astro')
     ) {
       const defaultSpecifier = node.specifiers?.find(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (s: any) => s.type === 'ImportDefaultSpecifier'
       );
+
       if (defaultSpecifier) {
         return {
           local: defaultSpecifier.local.name,
@@ -203,7 +214,8 @@ function findFirstAstroImport(
       }
     }
   }
-  return null;
+  
+return null;
 }
 
 /**
@@ -213,6 +225,7 @@ function findFirstAstroImport(
  */
 function emitAndRewriteAssetUrls(
   html: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ctx: any,
   refIds: Map<string, string>
 ): string {
@@ -228,8 +241,10 @@ function emitAndRewriteAssetUrls(
       const name = basename(pathOnly);
       const refId = ctx.emitFile({ type: 'asset', name, source });
       const placeholder = `__ASTRO_PRERENDER_ASSET_${refId}__`;
+
       refIds.set(placeholder, refId);
-      return placeholder;
+      
+return placeholder;
     } catch {
       return fullMatch;
     }

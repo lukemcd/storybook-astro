@@ -22,7 +22,9 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (config, { pres
   config.plugins.push(
     storybookAstroMiddlewarePlugin,
     viteStorybookRendererFallbackPlugin(options.integrations),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vitePluginAstroComponentMarker() as any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vitePluginAstroBuildPrerender(options.integrations) as any,
     ...viteConfig.plugins
   );
