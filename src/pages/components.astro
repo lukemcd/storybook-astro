@@ -127,33 +127,38 @@ const accordionItems: Array<{ title: string; content: string }> = [
   .widget-section h2 {
     font-size: 1.75rem;
     margin-bottom: 0.5rem;
-    color: #1a1a2e;
   }
 
   .widget-section > p {
-    color: #666;
+    color: #8b949e;
     margin-bottom: 1.5rem;
   }
 
   .widgets-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   .widget-item {
     padding: 1.5rem;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: #161b22;
+    border: 1px solid #21262d;
+    border-radius: 10px;
     min-height: 120px;
     display: flex;
     flex-direction: column;
+    transition: border-color 0.2s;
+  }
+
+  .widget-item:hover {
+    border-color: #30363d;
   }
 
   .widget-item h3 {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     margin-bottom: 1rem;
-    color: #1a1a2e;
+    color: #8b949e;
+    font-weight: 600;
   }
 </style>
