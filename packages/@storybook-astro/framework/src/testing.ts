@@ -29,6 +29,7 @@
  * ```
  */
 
+// eslint-disable-next-line n/no-extraneous-import
 import { test, expect } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -167,7 +168,7 @@ export function cjsInteropPlugin(): Plugin {
       // When Vite resolves a bare import in SSR/test context, redirect
       // packages that have ESM entry points to those entries instead of
       // their CJS "main" or "require" entries.
-      if (id.startsWith('.') || id.startsWith('/') || id.startsWith('\0') || id.includes('node_modules')) return;
+      if (id.startsWith('.') || id.startsWith('/') || id.startsWith('\0') || id.includes('node_modules')) {return;}
 
       // Find the package's node_modules directory
       const parts = id.split('/');
@@ -175,27 +176,32 @@ export function cjsInteropPlugin(): Plugin {
       const subpath = parts.slice(pkgName.split('/').length).join('/');
 
       // Only redirect the main entry (no subpath or common subpaths)
-      if (subpath && !['server-renderer', 'server', 'client'].includes(subpath)) return;
+      if (subpath && !['server-renderer', 'server', 'client'].includes(subpath)) {return;}
 
       try {
         // Find the package.json
         const nmDir = join(process.cwd(), 'node_modules', pkgName);
         const pkgJsonPath = join(nmDir, 'package.json');
-        if (!existsSync(pkgJsonPath)) return;
+
+        if (!existsSync(pkgJsonPath)) {return;}
 
         const pkgJson = JSON.parse(readFileSync(pkgJsonPath, 'utf-8'));
 
         // Check for ESM entry in exports map
         const exportKey = subpath ? `./${subpath}` : '.';
         const exportEntry = pkgJson.exports?.[exportKey];
+
         if (exportEntry) {
           const importEntry = exportEntry.import;
+
           if (importEntry) {
             const esmPath = typeof importEntry === 'string'
               ? importEntry
               : importEntry.default || importEntry.node;
+
             if (esmPath) {
               const resolved = join(nmDir, esmPath);
+
               if (existsSync(resolved)) {
                 return resolved;
               }
@@ -206,6 +212,7 @@ export function cjsInteropPlugin(): Plugin {
         // Fallback: check the "module" field
         if (!subpath && pkgJson.module) {
           const resolved = join(nmDir, pkgJson.module);
+
           if (existsSync(resolved)) {
             return resolved;
           }
@@ -216,17 +223,19 @@ export function cjsInteropPlugin(): Plugin {
     },
     transform(code, id) {
       // Only transform node_modules files
-      if (!id.includes('node_modules')) return;
+      if (!id.includes('node_modules')) {return;}
       // Skip virtual modules
-      if (id.startsWith('\0')) return;
+      if (id.startsWith('\0')) {return;}
       // Skip files that already use ESM exports
-      if (/\bexport\s+(default|const|let|var|function|class|\{|\*)/.test(code)) return;
+      if (/\bexport\s+(default|const|let|var|function|class|\{|\*)/.test(code)) {return;}
       // Only wrap files that use CJS patterns
-      if (!code.includes('module.exports') && !code.includes('exports.')) return;
+      if (!code.includes('module.exports') && !code.includes('exports.')) {return;}
 
       const dirPath = id.substring(0, id.lastIndexOf('/'));
       const fileName = id;
-      return {
+
+      
+return {
         code: [
           'import { createRequire as __createRequire } from "module";',
           `var __require = __createRequire("file://${dirPath}/");`,
