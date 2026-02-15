@@ -30,10 +30,10 @@ export function vitePluginAstroComponentMarker(): PluginOption {
 
     transform(code: string, id: string) {
       // Only process main .astro modules (not sub-modules like ?astro&type=style)
-      if (!id.endsWith('.astro')) return null;
+      if (!id.endsWith('.astro')) {return null;}
 
       // Detect the Astro 6 client-side stub pattern
-      if (!code.includes('Astro components cannot be used in the browser')) return null;
+      if (!code.includes('Astro components cannot be used in the browser')) {return null;}
 
       const moduleId = id;
 
@@ -91,12 +91,14 @@ function generateInlineStyles(filePath: string): string {
     const source = readFileSync(filePath, 'utf-8');
     const cssBlocks = extractStyleBlocks(source);
 
-    if (cssBlocks.length === 0) return '';
+    if (cssBlocks.length === 0) {return '';}
 
     // Create a side-effect that injects styles into the document
     return cssBlocks.map((css, i) => {
       const escaped = JSON.stringify(css);
-      return `
+
+      
+return `
 (function() {
   if (typeof document !== 'undefined') {
     const style = document.createElement('style');
@@ -137,5 +139,7 @@ function countStyleBlocks(source: string): number {
   const withoutFrontmatter = source.replace(/^---[\s\S]*?---/m, '');
   // Match <style> opening tags (with optional attributes)
   const matches = withoutFrontmatter.match(/<style(\s|>)/g);
-  return matches ? matches.length : 0;
+
+  
+return matches ? matches.length : 0;
 }

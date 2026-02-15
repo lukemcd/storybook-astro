@@ -33,8 +33,9 @@ export async function vitePluginStorybookAstroMiddleware(options: FrameworkOptio
         } catch (err) {
           const errorMessage = err instanceof Error ? err.message : String(err);
           const errorStack = err instanceof Error ? err.stack : '';
+
           console.error('[storybook-astro] Render error:', errorMessage);
-          if (errorStack) console.error(errorStack);
+          if (errorStack) {console.error(errorStack);}
           server.ws.send('astro:render:response', {
             id: data.id,
             html:
@@ -56,7 +57,8 @@ export async function vitePluginStorybookAstroMiddleware(options: FrameworkOptio
       server.middlewares.use('/_image', (req, res, next) => {
         if (!viteServer) {
           next();
-          return;
+          
+return;
         }
         // Forward the request to the Astro vite server
         viteServer.middlewares.handle(req, res, (err) => {
