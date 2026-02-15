@@ -81,7 +81,7 @@ const render = (args: Args, context?: any) => {
  *
  * ```jsx
  * // setup-file.js
- * import { setProjectAnnotations } from '@storybook/astro';
+ * import { setProjectAnnotations } from '@storybook-astro/framework';
  * import projectAnnotations from './.storybook/preview';
  *
  * setProjectAnnotations(projectAnnotations);
@@ -107,7 +107,7 @@ export function setProjectAnnotations(
  * Example:
  * ```jsx
  * import { render } from '@testing-library/react';
- * import { composeStory } from '@storybook/astro';
+ * import { composeStory } from '@storybook-astro/framework';
  * import meta, { Primary as PrimaryStory } from './Button.stories';
  *
  * const Primary = composeStory(PrimaryStory, meta);
@@ -155,7 +155,7 @@ export function composeStory<TArgs extends Args = Args>(
  * Example:
  * ```jsx
  * import { render } from '@testing-library/react';
- * import { composeStories } from '@storybook/astro';
+ * import { composeStories } from '@storybook-astro/framework';
  * import * as stories from './Button.stories';
  *
  * const { Primary, Secondary } = composeStories(stories);
