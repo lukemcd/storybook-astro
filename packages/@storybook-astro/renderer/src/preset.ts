@@ -8,7 +8,8 @@ const __dirname = dirname(__filename);
 export const previewAnnotations = async (input = [], _options: Options) => {
   const result: string[] = [];
 
+  // Omit file extension — Vite resolves .ts (local dev) or .js (published dist)
   return result
     .concat(input)
-    .concat([join(__dirname, './entry-preview.ts')]);
+    .concat([join(__dirname, 'entry-preview')]);
 };
