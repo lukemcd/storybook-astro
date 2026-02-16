@@ -74,6 +74,8 @@ The core framework implementation that integrates Astro with Storybook's build s
 
 ### 2. `@storybook-astro/renderer` (Client Renderer)
 
+> This package is automatically installed as a dependency of `@storybook-astro/framework` — no separate installation is needed.
+
 The client-side rendering package that manages how Astro components are displayed in Storybook's preview:
 
 - **Render Function**: Determines how to render different component types (Astro components, HTML strings, DOM elements, framework components)

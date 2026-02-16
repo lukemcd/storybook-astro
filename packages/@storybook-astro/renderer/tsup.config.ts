@@ -14,10 +14,12 @@ export default defineConfig({
   clean: true,
   external: [
     'astro',
+    'astro:scripts/page.js',
     'storybook',
     'storybook/internal/types',
     'react',
     'react-dom',
     '@storybook/react',
+    /^virtual:/,
   ],
 });
