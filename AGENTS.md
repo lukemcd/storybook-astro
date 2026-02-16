@@ -278,14 +278,18 @@ The project uses a development workflow without compilation:
 
 The framework package depends on the renderer via `workspace:*`. Yarn Berry resolves this to the actual version at publish time. Raw `npm publish` does not understand `workspace:` and will publish it verbatim, breaking installs for consumers.
 
-Publish order matters — renderer first, then framework:
+Publish order matters — renderer first, then framework. **Always clean and rebuild before publishing** to avoid stale tsup output:
 ```bash
 cd packages/@storybook-astro/renderer
+rm -rf dist && yarn build
 yarn npm publish --tag beta --access public
 
 cd ../framework
+rm -rf dist && yarn build
 yarn npm publish --tag beta --access public
 ```
+
+> **Stale build warning**: The `prepublishOnly` hook runs `tsup`, but tsup may reuse cached output that omits recent source changes. Always `rm -rf dist` before building. After building, verify your changes are in the dist (e.g. `grep` for a known string in `dist/chunk-*.js`) before publishing.
 
 After publishing, promote to `latest` dist-tag so `npm install @storybook-astro/framework` gets the new version:
 ```bash

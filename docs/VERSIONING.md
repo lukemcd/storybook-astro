@@ -45,13 +45,17 @@ Changes to anything under `packages/@storybook-astro/*` follow the full Gitflow 
 3. Update `CHANGELOG.md`
 4. Final testing (`yarn test`, `yarn lint`)
 5. Merge to `main` and tag (e.g. `v0.1.0-beta.2`)
-6. Publish to npm (renderer first, then framework):
+6. Clean-build and publish to npm (renderer first, then framework):
    ```bash
    cd packages/@storybook-astro/renderer
+   rm -rf dist && yarn build
    yarn npm publish --tag beta --access public
+
    cd ../framework
+   rm -rf dist && yarn build
    yarn npm publish --tag beta --access public
    ```
+   > **Warning — stale builds**: The `prepublishOnly` hook runs `tsup`, but tsup may produce a cached/stale build that omits recent source changes. Always `rm -rf dist` and rebuild explicitly before publishing. Verify the dist output contains your changes (e.g. `grep` for a known string) before running `yarn npm publish`.
 7. Promote to `latest` dist-tag:
    ```bash
    npm dist-tag add @storybook-astro/renderer@x.y.z-beta.N latest

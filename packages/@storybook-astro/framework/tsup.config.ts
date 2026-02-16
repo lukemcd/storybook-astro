@@ -7,6 +7,7 @@ export default defineConfig({
     'src/preset.ts',
     'src/testing.ts',
     'src/integrations/index.ts',
+    'src/middleware.ts',
   ],
   format: ['esm'],
   dts: false,
@@ -30,5 +31,6 @@ export default defineConfig({
     '@storybook/preact',
     '@storybook-astro/renderer',
     'storybook-solidjs',
+    'virtual:astro-container-renderers',
   ],
 });
