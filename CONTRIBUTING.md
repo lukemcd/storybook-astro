@@ -52,8 +52,17 @@ Thank you for your interest in contributing! This project is community-driven an
    git checkout -b feature/your-feature
    ```
 2. Make your changes
-3. Run `yarn test` to ensure all tests pass
-4. Open a PR targeting `develop`
+3. Run linting and fix any issues:
+   ```bash
+   yarn lint
+   ```
+   To auto-fix what ESLint can handle:
+   ```bash
+   yarn lint:fix
+   ```
+   **PRs must pass linting** — CI will reject PRs with lint errors.
+4. Run `yarn test` to ensure all tests pass
+5. Open a PR targeting `develop`
 5. Once reviewed and merged, your changes will be included in the next release
 
 ### Releases
