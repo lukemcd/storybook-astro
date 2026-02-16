@@ -1,6 +1,6 @@
 {
   "name": "@storybook-astro/framework",
-  "version": "0.1.0-beta.3",
+  "version": "0.1.0-beta.4",
   "description": "Community-supported Storybook framework for Astro 6 components",
   "type": "module",
   "license": "MIT",
@@ -136,13 +136,6 @@
   },
   "dependencies": {
     "@storybook-astro/renderer": "workspace:*",
-    "preact": "*",
-    "react": "*",
-    "react-dom": "*",
-    "solid-js": "*",
-    "storybook": "*",
-    "svelte": "*",
-    "vite": "^6.2.5 || ^7.0.0",
-    "vue": "*"
+    "vite": "^6.2.5 || ^7.0.0"
   }
 }
