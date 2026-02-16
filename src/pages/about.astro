@@ -42,7 +42,7 @@ const readmeContent = marked.parse(readmeMarkdown);
 
   .readme-content :global(p) {
     margin-bottom: 1rem;
-    color: #8b949e;
+    color: #c9d1d9;
   }
 
   .readme-content :global(ul),
@@ -53,11 +53,40 @@ const readmeContent = marked.parse(readmeMarkdown);
 
   .readme-content :global(li) {
     margin-bottom: 0.5rem;
-    color: #8b949e;
+    color: #c9d1d9;
   }
 
   .readme-content :global(a) {
     color: #58a6ff;
+  }
+
+  .readme-content :global(code) {
+    background: rgba(110, 118, 129, 0.2);
+    color: #e6edf3;
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+
+  .readme-content :global(pre) {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+
+  .readme-content :global(pre code) {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    color: #c9d1d9;
+    font-size: 0.875rem;
+  }
+
+  .readme-content :global(strong) {
+    color: #e6edf3;
   }
 
   .readme-content :global(blockquote) {
@@ -85,7 +114,7 @@ const readmeContent = marked.parse(readmeMarkdown);
     border: 1px solid #30363d;
     padding: 0.75rem;
     text-align: left;
-    color: #8b949e;
+    color: #c9d1d9;
   }
 
   .readme-content :global(th) {
