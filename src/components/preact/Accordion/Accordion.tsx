@@ -52,12 +52,12 @@ export default function Accordion({ items = [], allowMultiple = false }: Accordi
       ))}
       <style>{`
         .accordion {
-          border: 1px solid #e0e0e0;
+          border: 1px solid #30363d;
           border-radius: 8px;
           overflow: hidden;
         }
         .accordion-item {
-          border-bottom: 1px solid #e0e0e0;
+          border-bottom: 1px solid #30363d;
         }
         .accordion-item:last-child {
           border-bottom: none;
@@ -65,7 +65,7 @@ export default function Accordion({ items = [], allowMultiple = false }: Accordi
         .accordion-header {
           width: 100%;
           padding: 1rem;
-          background: #f5f5f5;
+          background: #21262d;
           border: none;
           text-align: left;
           cursor: pointer;
@@ -74,18 +74,21 @@ export default function Accordion({ items = [], allowMultiple = false }: Accordi
           align-items: center;
           font-size: 1rem;
           font-weight: 500;
+          color: #c9d1d9;
           transition: background 0.2s;
         }
         .accordion-header:hover {
-          background: #ebebeb;
+          background: #292e36;
         }
         .accordion-icon {
           font-size: 1.25rem;
           font-weight: bold;
+          color: #8b949e;
         }
         .accordion-content {
           padding: 1rem;
-          background: white;
+          background: #161b22;
+          color: #c9d1d9;
         }
       `}</style>
     </div>
