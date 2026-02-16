@@ -1,6 +1,7 @@
 import type { Integration } from './integrations/index.ts';
 
 export function viteAstroContainerRenderersPlugin(integrations: Integration[]) {
+  const safeIntegrations = integrations ?? [];
   const name = 'astro-container-renderers';
   const virtualModuleId = `virtual:${name}`;
   const resolvedVirtualModuleId = `\0${virtualModuleId}`;
@@ -16,12 +17,12 @@ export function viteAstroContainerRenderersPlugin(integrations: Integration[]) {
 
     load(id: string) {
       if (id === resolvedVirtualModuleId) {
-        const importStatements = buildImportStatements(integrations);
+        const importStatements = buildImportStatements(safeIntegrations);
 
         const code = `
           ${importStatements}
           export function addRenderers(container) {
-            ${integrations.map((integration) => buildServerRenderer(integration) + '\n' + buildClientRenderer(integration)).join('\n')}
+            ${safeIntegrations.map((integration) => buildServerRenderer(integration) + '\n' + buildClientRenderer(integration)).join('\n')}
           }
         `;
 

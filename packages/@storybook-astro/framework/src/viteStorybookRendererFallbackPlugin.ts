@@ -1,6 +1,7 @@
 import type { Integration } from './integrations/index.ts';
 
 export function viteStorybookRendererFallbackPlugin(integrations: Integration[]) {
+  const safeIntegrations = integrations ?? [];
   const name = 'storybook-renderer-fallback';
   const virtualModuleId = `virtual:${name}`;
   const resolvedVirtualModuleId = `\0${virtualModuleId}`;
@@ -16,7 +17,7 @@ export function viteStorybookRendererFallbackPlugin(integrations: Integration[])
 
     load(id: string) {
       if (id === resolvedVirtualModuleId) {
-        return integrations
+        return safeIntegrations
           .filter((integration) => integration.storybookEntryPreview)
           .map(
             (integration) =>

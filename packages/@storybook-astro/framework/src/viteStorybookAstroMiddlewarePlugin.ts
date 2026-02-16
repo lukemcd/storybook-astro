@@ -20,7 +20,7 @@ export async function vitePluginStorybookAstroMiddleware(options: FrameworkOptio
       const middleware = await viteServer.ssrLoadModule(filePath, {
         fixStacktrace: true
       });
-      const handler = await middleware.handlerFactory(options.integrations);
+      const handler = await middleware.handlerFactory(options.integrations ?? []);
 
       server.ws.on('astro:render:request', async (data: RenderRequestMessage['data']) => {
         try {
@@ -93,13 +93,14 @@ return;
 
 export async function createViteServer(integrations: Integration[]) {
   const { getViteConfig } = await import('astro/config');
+  const safeIntegrations = integrations ?? [];
 
   const config = await getViteConfig(
     {},
     {
       configFile: false,
       integrations: await Promise.all(
-        integrations.map((integration) => integration.loadIntegration())
+        safeIntegrations.map((integration) => integration.loadIntegration())
       )
     }
   )({ mode: 'development', command: 'serve' });
@@ -109,7 +110,7 @@ export async function createViteServer(integrations: Integration[]) {
     ...config,
     plugins: [
       ...(config.plugins?.filter(Boolean) ?? []),
-      viteAstroContainerRenderersPlugin(integrations),
+      viteAstroContainerRenderersPlugin(safeIntegrations),
       vitePluginAstroFontsFallback()
     ]
   });

@@ -26,6 +26,7 @@ import { createViteServer } from './viteStorybookAstroMiddlewarePlugin.ts';
  * - Stories that override the meta component are skipped
  */
 export function vitePluginAstroBuildPrerender(integrations: Integration[]): Plugin {
+  const safeIntegrations = integrations ?? [];
   let viteServer: ViteDevServer | null = null;
   let handler: ((data: HandlerProps) => Promise<string>) | null = null;
 
@@ -41,14 +42,14 @@ export function vitePluginAstroBuildPrerender(integrations: Integration[]): Plug
 
     async buildStart() {
       try {
-        viteServer = await createViteServer(integrations);
+        viteServer = await createViteServer(safeIntegrations);
 
         const filePath = fileURLToPath(new URL('./middleware', import.meta.url));
         const middleware = await viteServer.ssrLoadModule(filePath, {
           fixStacktrace: true
         });
 
-        handler = await middleware.handlerFactory(integrations);
+        handler = await middleware.handlerFactory(safeIntegrations);
       } catch (err) {
         console.warn(
           '[storybook-astro] Failed to create pre-render server:',

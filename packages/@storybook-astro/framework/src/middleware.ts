@@ -9,6 +9,7 @@ export type HandlerProps = {
 };
 
 export async function handlerFactory(integrations: Integration[]) {
+  const safeIntegrations = integrations ?? [];
   const container = await AstroContainer.create({
     // Somewhat hacky way to force client-side Storybook's Vite to resolve modules properly
     resolve: async (s) => {
@@ -16,7 +17,7 @@ export async function handlerFactory(integrations: Integration[]) {
         return `/@id/${s}`;
       }
 
-      for (const integration of integrations) {
+      for (const integration of safeIntegrations) {
         const resolution = integration.resolveClient(s);
 
         if (resolution) {
