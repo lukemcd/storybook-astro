@@ -29,13 +29,14 @@ const ASTRO_PLUGINS_THAT_ARE_SUPPOSEDLY_NOT_NEEDED_IN_STORYBOOK = [
 
 export async function mergeWithAstroConfig(config: InlineConfig, integrations: Integration[] = []) {
   const { getViteConfig } = await import('astro/config');
+  const safeIntegrations = integrations ?? [];
 
   const astroConfig = await getViteConfig(
     {},
     {
       configFile: false,
       integrations: await Promise.all(
-        integrations.map((integration) => integration.loadIntegration())
+        safeIntegrations.map((integration) => integration.loadIntegration())
       )
     }
   )({
