@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.0-beta.2] - 2026-02-16
+
+### Fixed
+- Astro 6 peer dependency compatibility — `astro` peer dep now accepts `^5.5.3 || ^6.0.0-beta.0`
+- All `@astrojs/*` integration peer deps updated for Astro 6 beta versions
+
+### Added
+- `yarn lint` and `yarn lint:fix` scripts
+- Versioning and branching strategy documentation (`docs/VERSIONING.md`)
+- Storybook docs panel typography overrides for light background readability
+- Mobile hamburger navigation for the website
+
+### Changed
+- Accordion components updated to dark theme styling across all 7 frameworks
+- Website "Components Demo" renamed to "Sample Components"
+- Navigation reordered: About, Contribute, Sample Components, Storybook Demo
+- About page text contrast improved (`#c9d1d9` for paragraphs/lists, styled inline code and code blocks)
+
 ## [0.1.0-beta.1] - 2025-06-15
 
 ### Added
