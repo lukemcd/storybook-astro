@@ -359,6 +359,14 @@ export const MyStory = {
 - [Vite Plugin API](https://vitejs.dev/guide/api-plugin.html)
 - [Original Feature Request](https://github.com/storybookjs/storybook/issues/18356)
 
+## Versioning and Branching
+
+See [`docs/VERSIONING.md`](./docs/VERSIONING.md) for the full versioning and branching strategy, including:
+- Semantic versioning and beta release conventions
+- Gitflow branching model (`main`, `develop`, `feature/*`, `fix/*`, `release/*`)
+- Distinction between **package releases** (go through `develop` → `release/*` → `main`) and **website-only changes** (merge directly to `main`)
+- Hotfix and mixed-change workflows
+
 ## Getting Help
 
 When asking for help from AI or humans:
