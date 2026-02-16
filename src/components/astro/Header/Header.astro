@@ -11,11 +11,10 @@ interface Props {
 }
 
 const defaultNavItems: NavItem[] = [
-  { label: 'Home', href: '/' },
   { label: 'About', href: '/about' },
-  { label: 'Components Demo', href: '/components' },
-  { label: 'Storybook Demo', href: 'https://demo.storybook-astro.org' },
   { label: 'Contribute', href: '/contribute' },
+  { label: 'Sample Components', href: '/components' },
+  { label: 'Storybook Demo', href: 'https://demo.storybook-astro.org' },
 ];
 
 const {
@@ -34,6 +33,11 @@ return current === href || current === `${href}/`;
 <header>
   <div class="header-content">
     <a href="/" class="logo">{logoText}</a>
+    <button class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
     <nav>
       {navItems.map((item) => (
         <a href={item.href} class:list={[{ active: isActive(item.href, currentPath) }]}>
@@ -43,6 +47,28 @@ return current === href || current === `${href}/`;
     </nav>
   </div>
 </header>
+
+<script>
+  const hamburger = document.querySelector('.hamburger');
+  const nav = document.querySelector('header nav');
+
+  hamburger?.addEventListener('click', () => {
+    const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+
+    hamburger.setAttribute('aria-expanded', String(!expanded));
+    hamburger.classList.toggle('open');
+    nav?.classList.toggle('open');
+  });
+
+  // Close menu when a nav link is clicked
+  nav?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      hamburger?.classList.remove('open');
+      hamburger?.setAttribute('aria-expanded', 'false');
+      nav.classList.remove('open');
+    });
+  });
+</script>
 
 <style>
   header {
@@ -103,21 +129,69 @@ return current === href || current === `${href}/`;
     color: #f0f6fc;
   }
 
+  /* Hamburger button — hidden on desktop */
+  .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .hamburger .bar {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #f0f6fc;
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .hamburger.open .bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .hamburger.open .bar:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger.open .bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
   @media (max-width: 768px) {
-    .header-content {
-      flex-direction: column;
-      gap: 1rem;
-      align-items: flex-start;
+    .hamburger {
+      display: flex;
     }
 
-    nav {
-      gap: 1rem;
-      width: 100%;
+    .header-content {
       flex-wrap: wrap;
     }
 
+    nav {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      gap: 0;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(48, 54, 61, 0.6);
+      margin-top: 0.75rem;
+    }
+
+    nav.open {
+      display: flex;
+    }
+
     nav a {
-      font-size: 0.875rem;
+      font-size: 0.95rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(48, 54, 61, 0.3);
+    }
+
+    nav a:last-child {
+      border-bottom: none;
     }
   }
 </style>
