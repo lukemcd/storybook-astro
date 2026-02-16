@@ -43,10 +43,27 @@ Changes to anything under `packages/@storybook-astro/*` follow the full Gitflow 
 1. Create `release/x.y.z` from `develop`
 2. Bump versions in both package.json files
 3. Update `CHANGELOG.md`
-4. Final testing
+4. Final testing (`yarn test`, `yarn lint`)
 5. Merge to `main` and tag (e.g. `v0.1.0-beta.2`)
-6. Publish to npm: `npm publish --tag beta --access public` from each package directory
-7. Merge `main` back into `develop`
+6. Publish to npm (renderer first, then framework):
+   ```bash
+   cd packages/@storybook-astro/renderer
+   yarn npm publish --tag beta --access public
+   cd ../framework
+   yarn npm publish --tag beta --access public
+   ```
+7. Promote to `latest` dist-tag:
+   ```bash
+   npm dist-tag add @storybook-astro/renderer@x.y.z-beta.N latest
+   npm dist-tag add @storybook-astro/framework@x.y.z-beta.N latest
+   ```
+8. Merge `main` back into `develop`
+
+### Publishing: `yarn npm publish` vs `npm publish`
+
+**Always use `yarn npm publish`, never raw `npm publish`.**
+
+The framework package depends on the renderer via `"@storybook-astro/renderer": "workspace:*"`. Yarn Berry automatically resolves `workspace:*` to the actual version number at publish time. Raw `npm publish` does not understand the `workspace:` protocol and will publish it verbatim, causing install failures for consumers.
 
 ### Hotfixes
 
@@ -55,7 +72,7 @@ For critical bugs in a published release:
 1. Branch from `main` as `fix/critical-bug`
 2. Fix, test, bump patch version
 3. Merge to both `main` and `develop`
-4. Tag and publish
+4. Tag and publish with `yarn npm publish` (see publishing note above)
 
 ## Workflow: Website-Only Changes
 

@@ -27,7 +27,7 @@ const ASTRO_PLUGINS_THAT_ARE_SUPPOSEDLY_NOT_NEEDED_IN_STORYBOOK = [
   'astro:vite-plugin-file-url'
 ];
 
-export async function mergeWithAstroConfig(config: InlineConfig, integrations: Integration[]) {
+export async function mergeWithAstroConfig(config: InlineConfig, integrations: Integration[] = []) {
   const { getViteConfig } = await import('astro/config');
 
   const astroConfig = await getViteConfig(

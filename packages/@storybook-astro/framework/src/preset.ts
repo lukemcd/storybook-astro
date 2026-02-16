@@ -19,13 +19,15 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (config, { pres
     config.plugins = [];
   }
 
+  const integrations = options.integrations ?? [];
+
   config.plugins.push(
     storybookAstroMiddlewarePlugin,
-    viteStorybookRendererFallbackPlugin(options.integrations),
+    viteStorybookRendererFallbackPlugin(integrations),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vitePluginAstroComponentMarker() as any,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vitePluginAstroBuildPrerender(options.integrations) as any,
+    vitePluginAstroBuildPrerender(integrations) as any,
     ...viteConfig.plugins
   );
 
@@ -47,7 +49,7 @@ export const viteFinal: StorybookConfigVite['viteFinal'] = async (config, { pres
     aliases['react-dom'] = 'react-dom';
   }
 
-  const finalConfig = await mergeWithAstroConfig(config, options.integrations);
+  const finalConfig = await mergeWithAstroConfig(config, integrations);
 
   return finalConfig;
 };

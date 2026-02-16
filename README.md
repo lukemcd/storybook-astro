@@ -8,11 +8,27 @@ The community-supported Storybook framework for Astro. Build, test, and document
 
 ## Quick Start
 
+Add Storybook to an existing Astro project:
+
+### 1. Install packages
+
 ```bash
-npm install @storybook-astro/framework
+npm install --save-dev storybook @storybook/builder-vite @storybook-astro/framework
 ```
 
-Configure in `.storybook/main.js`:
+### 2. Create `.storybook/main.js`
+
+```javascript
+export default {
+  stories: ['../src/**/*.stories.@(js|jsx|ts|tsx)'],
+  framework: {
+    name: '@storybook-astro/framework',
+    options: {},
+  },
+};
+```
+
+To use non-Astro framework components (React, Vue, Svelte, etc.) inside your stories, add integrations:
 
 ```javascript
 import { react, vue, svelte } from '@storybook-astro/framework/integrations';
@@ -31,6 +47,39 @@ export default {
   },
 };
 ```
+
+### 3. Create `.storybook/preview.js`
+
+```javascript
+const preview = {
+  parameters: {
+    controls: {
+      matchers: {
+        color: /(background|color)$/i,
+        date: /Date$/i,
+      },
+    },
+  },
+};
+export default preview;
+```
+
+### 4. Add scripts to `package.json`
+
+```json
+"scripts": {
+  "storybook": "storybook dev -p 6006",
+  "build-storybook": "storybook build"
+}
+```
+
+### 5. Run Storybook
+
+```bash
+npm run storybook
+```
+
+> **Note:** `npm create storybook@latest` does not yet recognize Astro as a framework. Use the manual setup above instead. If you've already run `storybook init --type web-components`, replace the framework in `.storybook/main.js` with `@storybook-astro/framework` and remove the generated example stories.
 
 ## Requirements
 

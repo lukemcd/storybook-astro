@@ -272,6 +272,29 @@ The project uses a development workflow without compilation:
 - No build step required for development
 - Storybook reads TypeScript files directly via Vite
 
+### Publishing to npm
+
+**IMPORTANT: Always use `yarn npm publish`, never raw `npm publish`.**
+
+The framework package depends on the renderer via `workspace:*`. Yarn Berry resolves this to the actual version at publish time. Raw `npm publish` does not understand `workspace:` and will publish it verbatim, breaking installs for consumers.
+
+Publish order matters — renderer first, then framework:
+```bash
+cd packages/@storybook-astro/renderer
+yarn npm publish --tag beta --access public
+
+cd ../framework
+yarn npm publish --tag beta --access public
+```
+
+After publishing, promote to `latest` dist-tag so `npm install @storybook-astro/framework` gets the new version:
+```bash
+npm dist-tag add @storybook-astro/renderer@<version> latest
+npm dist-tag add @storybook-astro/framework@<version> latest
+```
+
+See [`docs/VERSIONING.md`](./docs/VERSIONING.md) for the full release process.
+
 ## Key Concepts
 
 ### Astro Container API
