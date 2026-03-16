@@ -1,3 +1,13 @@
+> [!CAUTION]
+> ## This repository has moved!
+>
+> This project is now maintained at **[github.com/storybook-astro/storybook-astro](https://github.com/storybook-astro/storybook-astro)**.
+> Please open all new issues and pull requests there.
+>
+> This repository is archived and no longer accepting contributions.
+
+---
+
 # Storybook Astro
 
 The community-supported Storybook framework for Astro. Build, test, and document your Astro components in Storybook's interactive environment.
